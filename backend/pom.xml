@@ -5,50 +5,61 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- ✅ Upgraded Spring Boot parent to the latest 3.3.x LTS patch -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.3.13</version>
         <relativePath/>
     </parent>
 
     <groupId>org.twilight</groupId>
     <artifactId>ecommerce-platform</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>ecommerce-platform</name>
-    <description>Spring Boot Backend for Twilight E-commerce Platform</description>
+    <description>Spring Boot Backend for Twilight E-commerce Platform (Secure)</description>
     <packaging>jar</packaging>
 
     <properties>
+        <!-- ✅ Java 21 is perfect for Boot 3.x -->
         <java.version>21</java.version>
     </properties>
 
     <dependencies>
-        <!-- Spring Boot web and DB dependencies -->
+
+        <!-- 🌐 Web starter (includes Spring MVC + embedded Tomcat) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- 🍃 MongoDB (Spring Data MongoDB) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+
+        <!-- 🧱 Validation API (optional but good for secure input validation) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
 
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- Lombok -->
+
+        <!-- ✨ Lombok (compile-time only) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!-- Dev tools -->
+        <!-- ⚙️ Devtools (runtime only, disable in production) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -56,17 +67,20 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Testing -->
+        <!-- 🧪 Testing dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
+
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Compiler plugin -->
+            <!-- ⚙️ Java Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -82,7 +96,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot plugin -->
+            <!-- 🚀 Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -94,6 +108,20 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>9.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
