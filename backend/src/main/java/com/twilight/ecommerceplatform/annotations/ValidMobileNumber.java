@@ -1,6 +1,6 @@
 package com.twilight.ecommerceplatform.annotations;
 
-import com.twilight.ecommerceplatform.validator.mobileNumberValidator;
+import com.twilight.ecommerceplatform.validator.MobileNumberValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jdk.jfr.Description;
@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Description("Mobile Number Must be exactly of 10 digit")
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-@Constraint(validatedBy = mobileNumberValidator.class)
+@Constraint(validatedBy = MobileNumberValidator.class)
 @Documented
 public @interface ValidMobileNumber {
     String message() default "Invalid Mobile Number";
