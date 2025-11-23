@@ -8,18 +8,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class UserController {
+public abstract class UserController {
     @Autowired
     UserRepo userRepo;
     @PostMapping
     public String signUp(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("name")String name){
-        User user = new User();
 
-        UserRepo.save(user);
+
+        UserRepo.save();
         return "Sign up successfully";
     }
-    @PostMapping("") //path to be declared
-    public String signIn(@RequestParam("email") String email, @RequestParam("password") String password){
 
+    @PostMapping("") //path to be declared
+    public String signIn(@RequestParam("email") String email, @RequestParam("password") String password) {
+        return null;
     }
+
 }

@@ -1,8 +1,10 @@
 package com.twilight.ecommerceplatform.repositories;
 
-import com.twilight.ecommerceplatform.entities.User;
+import org.jetbrains.annotations.Contract;
 
 public class UserRepo {
-    public static void save(User user) {
+    @Contract(pure = true)
+    public static void save() {
+
     }
 }
