@@ -14,14 +14,18 @@ public abstract class UserController {
     @PostMapping
     public String signUp(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("name")String name){
 
-
-        UserRepo.save();
+        User user = new User();
+        userRepo.save(user);
         return "Sign up successfully";
     }
 
     @PostMapping("") //path to be declared
     public String signIn(@RequestParam("email") String email, @RequestParam("password") String password) {
-        return null;
+        User user = userRepo.findByEmailandPassword(email, password);
+        if (user != null) {
+
+        }
+        return "";
     }
 
 }
