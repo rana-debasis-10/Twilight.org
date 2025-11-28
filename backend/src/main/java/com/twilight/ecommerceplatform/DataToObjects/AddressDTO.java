@@ -1,14 +1,15 @@
-package com.twilight.ecommerceplatform.components;
+package com.twilight.ecommerceplatform.DataToObjects;
 
 import lombok.Data;
 
 @Data
-public class Address {
+public class AddressDTO {
+    private long addressId;
     private String street;
     private String city;
     private String state;
     private String country;
     private String postalCode;
-    private Double latitude;   // optional
-    private Double longitude;
+    private String landMark;
+
 }
