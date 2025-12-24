@@ -38,6 +38,9 @@ public class User {
     @Nullable
     private Address address; // Primary Address of the User
 
+    @NotNull
+    private String role; //Role of the user
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<OrderEntity> orders=new ArrayList<>();
