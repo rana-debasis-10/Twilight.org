@@ -2,26 +2,32 @@ package com.twilight.ecommerceplatform.services;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.twilight.ecommerceplatform.DataToObjects.OrderRequestDTO;
+import com.twilight.ecommerceplatform.dto.OrderRequestDTO;
 import com.twilight.ecommerceplatform.componenets.SessionUser;
 import com.twilight.ecommerceplatform.entities.*;
 import com.twilight.ecommerceplatform.enums.PaymentMethod;
 import com.twilight.ecommerceplatform.enums.PaymentStatus;
+import com.twilight.ecommerceplatform.repositories.OrderEntityRepo;
 import com.twilight.ecommerceplatform.utility.Converter;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.time.Instant;
 import java.util.*;
 
 public class OrderService {
-
+    /// Razorpay public key
     @Value("${razorpay.key_id}")
     private String keyId;
 
+    /// Razorpay private key
     @Value("${razorpay.key_secret}")
     private String keySecret;
+
 
     @Autowired
     private ProductService productService;
@@ -32,7 +38,10 @@ public class OrderService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private OrderEntityRepo orderEntityRepo;
 
+    /// Creating an Order
     public Map<String, Object> createOrder(OrderRequestDTO orderDetails , @ModelAttribute SessionUser sessionUser) throws Exception {
 
         long amount = 0;
@@ -58,7 +67,7 @@ public class OrderService {
 
         // --- Calculate total amount ---
         for (OrderItem orderItem : orderItems) {
-            amount += orderItem.getSubtotal();
+            amount += (long)orderItem.getSubtotal();
         }
 
         // --- Create receipt ---
@@ -102,10 +111,11 @@ public class OrderService {
         orderEntity.setItems(orderItems);
         orderEntity.setPaymentStatus(PaymentStatus.PENDING);
         orderEntity.setPaymentMethod(orderDetails.getPaymentMethod());
+        orderEntity.setTimeStamp(Instant.now());
 
         // --- Set Address safely ---
         if (orderDetails.getUseUserAddress()) {
-            Address address = addressService.getAddress(sessionUser.getPrimaryAddressId());
+            Address address = addressService.getById(sessionUser.getPrimaryAddressId());
             Address copiedAddress = new Address();
             copiedAddress.setCity(address.getCity());
             copiedAddress.setState(address.getState());
@@ -132,12 +142,17 @@ public class OrderService {
         }
 
         // --- Set User ---
-        User user = userService.getUser(sessionUser.getUserId());
+        User user = userService.getById(sessionUser.getUserId());
         orderEntity.setUser(user);
 
         user.getOrders().add(orderEntity);
         userService.saveUser(user);
 
         return response;
+    }
+
+    /// View Orders in Batches of ten
+    public List<OrderEntity> getOrderBatch(Long userId,int pageNum){
+        return orderEntityRepo.findByUserId(userId,PageRequest.of(pageNum,10)).getContent();
     }
 }

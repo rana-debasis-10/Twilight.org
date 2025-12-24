@@ -1,6 +1,6 @@
 package com.twilight.ecommerceplatform.controller;
 
-import com.twilight.ecommerceplatform.DataToObjects.OrderRequestDTO;
+import com.twilight.ecommerceplatform.dto.OrderRequestDTO;
 import com.twilight.ecommerceplatform.componenets.SessionUser;
 import com.twilight.ecommerceplatform.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

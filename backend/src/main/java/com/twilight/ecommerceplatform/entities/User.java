@@ -33,6 +33,8 @@ public class User {
     @ValidEmail
     private String email; // Email of User
 
+    private String password; // Password for account
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "addressId")
     @Nullable
