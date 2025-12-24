@@ -1,7 +1,7 @@
 package com.twilight.ecommerceplatform.controller;
 
 import com.twilight.ecommerceplatform.services.PaymentService;
-import com.twilight.ecommerceplatform.DataToObjects.PaymentResponseDTO;
+import com.twilight.ecommerceplatform.dto.PaymentResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

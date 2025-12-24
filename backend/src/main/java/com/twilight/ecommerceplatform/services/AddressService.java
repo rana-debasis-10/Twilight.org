@@ -10,7 +10,13 @@ import org.springframework.stereotype.Service;
 public class AddressService {
     @Autowired
     private AddressRepo addressRepo;
-    public Address getAddress(Long addressId){
+
+    /// Finding address by address ID
+    public Address getById(Long addressId){
         return addressRepo.findById(addressId).orElse(null);
+    }
+    /// Finding address by user ID
+    public Address getByUserId(long userId){
+        return addressRepo.findByUserId(userId);
     }
 }

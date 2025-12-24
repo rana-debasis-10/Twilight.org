@@ -16,20 +16,23 @@ public class UserController {
     @Autowired
     UserRepo userRepo;
     @PostMapping
-    public String signUp(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("name")String name){
+        public String signUp(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("name")String name){
 
-        User user = new User();
-        userRepo.save(user);
-        return "Sign up successfully";
-    }
+            User user = new User();
+            userRepo.save(user);
+            return "Sign up successfully";
+        }
 
     @PostMapping("") //path to be declared
-    public String signIn(@RequestParam("email") String email, @RequestParam("password") String password) {
-        User user = userRepo.findByUsername(email);
-        if (user != null) {
+        public String signIn(@RequestParam("email") String email, @RequestParam("password") String password) {
+            User user = userRepo.findByEmail(email);
+            if (user != null) {
 
+            }
+            else{
+
+            }
+            return "";
         }
-        return "";
-    }
     }
 
