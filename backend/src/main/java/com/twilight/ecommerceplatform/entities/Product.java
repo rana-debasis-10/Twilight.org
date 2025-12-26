@@ -21,6 +21,10 @@ public class Product {
 
     @NotNull(message = "Please enter a price")
     private int price;
+
+    @NotNull(message = "Please enter number of items")
+    private int prodQty;
+
     private String fileName;
     private String filePath;
 }

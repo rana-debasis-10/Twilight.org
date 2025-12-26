@@ -1,17 +1,16 @@
 package com.twilight.ecommerceplatform.controller;
 
+import com.twilight.ecommerceplatform.DataToObjects.UserDTO;
 import com.twilight.ecommerceplatform.componenets.SessionUser;
 import com.twilight.ecommerceplatform.entities.User;
 import com.twilight.ecommerceplatform.repositories.UserRepo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @SessionAttributes("sessionUser")
@@ -20,11 +19,8 @@ public class UserController {
     @Autowired
     UserRepo userRepo;
     @PostMapping
-    public String signUp(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("name")String name){
-
-        User user = new User();
-        userRepo.save(user);
-        return "Sign up successfully";
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, HttpSession session){
+        return ResponseEntity.ok().build();
     }
 
     //Login Process
