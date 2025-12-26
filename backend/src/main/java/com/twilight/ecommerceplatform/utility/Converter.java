@@ -7,33 +7,41 @@ import com.twilight.ecommerceplatform.entities.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+/// ///////////////////////////////////////////////////////////////
+/// Converter class is to update Data to Object to Database Objects
+/// ///////////////////////////////////////////////////////////////
+
 
 public class Converter {
 
-    public static OrderItem orderItemToProduct(Product product){
+    /// Make product Item to orderItem adding its quantities (For single product)
+    public static OrderItem productToOrderItem(Product product){
         OrderItem orderItem = new OrderItem();
         orderItem.setProdId(product.getProdId());
         orderItem.setPrice(product.getPrice());
-        orderItem.setProdImage(product.getProdImage());
         orderItem.setProdName(product.getProdName());
         return orderItem;
     }
 
-    public static List<OrderItem> orderItemToProduct(List<Product> products, List<Integer> quantities){
+    ///  Convert Product to OrderItems//////////////////////////////////////////
+    public static List<OrderItem> productsToOrderItems(List<Product> products, List<Integer> quantities){
         List<OrderItem> orderItems = new ArrayList<>(0);
         OrderItem orderItem;
 
         for(int i = 0; i < products.size(); i++){
-            orderItem = orderItemToProduct(products.get(i));
-            orderItem.setQuantity(quantities.get(i));
-            orderItem.setSubtotal(orderItem.getPrice() * orderItem.getQuantity());
+           if(products.get(i).isAvailable) {
+                orderItem = productToOrderItem(products.get(i));
+                orderItem.setQuantity(quantities.get(i));
+                orderItem.setSubtotal(orderItem.getPrice() * orderItem.getQuantity());
 
-            orderItems.add(orderItem);   // ✅ FIXED (missing add)
+                orderItems.add(orderItem);
+            }
         }
 
         return orderItems;
     }
 
+    /// Updating AddressDTO to Address/////////////////////////////////////////
     public static Address addressDtoToAddress(AddressDTO addressDTO){
         Address address = new Address();
         address.setCity(addressDTO.getCity());
@@ -41,7 +49,7 @@ public class Converter {
         address.setState(addressDTO.getState());
         address.setLandMark(addressDTO.getLandMark());
         address.setPostalCode(addressDTO.getPostalCode());
-        address.setStreet(addressDTO.getStreet());   // ✅ FIXED (was using address.getStreet())
+        address.setStreet(addressDTO.getStreet());
         address.setPrimaryAddress(false);
 
         return address;

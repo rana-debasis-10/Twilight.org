@@ -7,6 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 
-public interface OrderEntityRepo extends JpaRepository<OrderEntity,Integer> {
+public interface OrderEntityRepo extends JpaRepository<OrderEntity,Long> {
     Page<OrderEntityResponseDTO> findByUserId(Long userId, Pageable pageable);
 }

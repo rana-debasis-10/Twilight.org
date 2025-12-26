@@ -2,9 +2,11 @@ package com.twilight.ecommerceplatform.services;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
+import com.twilight.ecommerceplatform.dto.OrderEntityResponseDTO;
 import com.twilight.ecommerceplatform.dto.OrderRequestDTO;
 import com.twilight.ecommerceplatform.componenets.SessionUser;
 import com.twilight.ecommerceplatform.entities.*;
+import com.twilight.ecommerceplatform.enums.DeliveryStatus;
 import com.twilight.ecommerceplatform.enums.PaymentMethod;
 import com.twilight.ecommerceplatform.enums.PaymentStatus;
 import com.twilight.ecommerceplatform.repositories.OrderEntityRepo;
@@ -12,12 +14,15 @@ import com.twilight.ecommerceplatform.utility.Converter;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.Instant;
 import java.util.*;
+/// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////// This is for any order Related services like update making order updaring order details //////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 public class OrderService {
     /// Razorpay public key
@@ -28,20 +33,26 @@ public class OrderService {
     @Value("${razorpay.key_secret}")
     private String keySecret;
 
-
+    /// Taken to calculated price from backend for secure price calculation
     @Autowired
     private ProductService productService;
 
+    /// Address service is called to update and make order address
+    /// (order address are separate and copied separately to ensure that order address does not change )
+    /// even if user changes their order
     @Autowired
     private AddressService addressService;
 
+
+    /// user Service to save the order in their order list
     @Autowired
     private UserService userService;
 
+    /// Order - Razorpay order and Order entity is for our database
     @Autowired
     private OrderEntityRepo orderEntityRepo;
 
-    /// Creating an Order
+    /// Creating an Order By User to Create Order///////////////////////////////////
     public Map<String, Object> createOrder(OrderRequestDTO orderDetails , @ModelAttribute SessionUser sessionUser) throws Exception {
 
         long amount = 0;
@@ -63,7 +74,7 @@ public class OrderService {
         }
 
         /// Convert to order items
-        List<OrderItem> orderItems = Converter.orderItemToProduct(products, quantities);
+        List<OrderItem> orderItems = Converter.productsToOrderItems(products, quantities);
 
         // --- Calculate total amount ---
         for (OrderItem orderItem : orderItems) {
@@ -151,8 +162,68 @@ public class OrderService {
         return response;
     }
 
-    /// View Orders in Batches of ten
-    public List<OrderEntity> getOrderBatch(Long userId,int pageNum){
+    /// View Orders in Batches of Ten For User to Create a Order/////////////////
+    public List<OrderEntityResponseDTO> getOrderBatch(@ModelAttribute SessionUser sessionUser, int pageNum){
+        Long userId=sessionUser.getUserId();
         return orderEntityRepo.findByUserId(userId,PageRequest.of(pageNum,10)).getContent();
     }
+
+    /// For Admin View/////////////////////////////////////////////////////////
+    public List<OrderEntity> getAllOrder(){
+        return orderEntityRepo.findAll();
+    }
+
+    /// For Admin view ///////////////////////////////////////////////////////
+    public boolean updateOrder(OrderEntity orderEntity){
+        try{
+            orderEntityRepo.save(orderEntity);
+        }
+        catch (Exception e){
+            return false;
+        }
+       return true;
+    }
+
+    /// For Restraunt update //////////////////////////////////////////////
+    public boolean updateStatusToPreparingFood(Long orderId){ OrderEntity order=orderEntityRepo.findById(orderId).get();
+        if(order!=null){
+            order.setDeliveryStatus(DeliveryStatus.FOOD_IS_BEING_PREPARED);
+            return true;
+        }
+        else{
+            return false;
+        }}
+
+    /// For Driver Update /////////////////////////////////////////////////
+    public boolean updateStatusToDirverOnWay(Long orderId){ OrderEntity order=orderEntityRepo.findById(orderId).get();
+        if(order!=null){
+            order.setDeliveryStatus(DeliveryStatus.DRIVER_IS_ON_THE_WAY);
+            return true;
+        }
+        else{
+            return false;
+        }}
+
+    ///  For Driver Update ///////////////////////////////////////////////
+    public boolean updateStatusToDelivered(Long orderId){ OrderEntity order=orderEntityRepo.findById(orderId).get();
+        if(order!=null){
+            order.setDeliveryStatus(DeliveryStatus.ORDER_CANCELLED);
+            return true;
+        }
+        else{
+            return false;
+        }}
+
+    /// Cancelled due to unavoidable circumstances //////////////////////
+    public boolean updateStatusToCancelled(Long orderId){
+        OrderEntity order=orderEntityRepo.findById(orderId).get();
+        if(order!=null){
+            order.setDeliveryStatus(DeliveryStatus.ORDER_CANCELLED);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }

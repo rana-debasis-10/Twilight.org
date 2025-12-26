@@ -23,4 +23,5 @@ public class Product {
     private int price;
     private String fileName;
     private String filePath;
+    public boolean isAvailable;
 }
