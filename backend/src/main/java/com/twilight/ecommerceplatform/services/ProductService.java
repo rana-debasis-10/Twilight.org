@@ -13,12 +13,15 @@ import java.util.List;
 public class ProductService {
 
     //mapping DTO to product
+    private final ProductRepo productRepo;
     private final productMapper prodMapper;
     @Autowired
-    public ProductService(productMapper prodMapper) {
-
-        this.prodMapper = prodMapper;
+    public ProductService(ProductRepo productRepo, productMapper prodMapper) {
+        this.productRepo = productRepo;
+        this.prodMapper= prodMapper;
     }
+
+
 
     //Saving the new product to product repo
     public Product saveProduct(ProductDTO productDTO){
@@ -26,7 +29,38 @@ public class ProductService {
         return productRepo.save(product);
     }
 
-    private ProductRepo productRepo;
+    //Create Product
+    public ProductDTO createProduct(ProductDTO productDTO){
+        Product product = prodMapper.toProduct(productDTO);
+        return prodMapper.toProductDTO(productRepo.save(product));
+    }
+
+    //Read Products
+    public List<Product> getAllProducts(){
+        return productRepo.findAll();
+    }
+
+    //Read Products by Id
+    public Product getProductById(long id){
+        return productRepo.findById(id).orElseThrow(() ->new RuntimeException("product not found"));
+    }
+
+    //Update Product
+    public ProductDTO updateProduct(long id, ProductDTO productDTO){
+        Product product = productRepo.findById(id).orElseThrow(() ->new RuntimeException("product not found"));
+        prodMapper.updateEntityFromDTO(productDTO, product);
+        return prodMapper.toProductDTO(productRepo.save(product));
+    }
+
+    //Delete Product
+    public void deleteProduct(long id){
+        if(!productRepo.existsById(id)){
+            throw new RuntimeException("product not found");
+        }
+
+        productRepo.deleteById(id);
+    }
+
     public List<Long> getProductPrices(List<Long> prodIds){
         return productRepo.findPriceByIds(prodIds);
     }

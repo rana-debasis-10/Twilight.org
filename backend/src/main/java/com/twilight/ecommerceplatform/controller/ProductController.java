@@ -20,12 +20,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
+@RequestMapping
 public class ProductController {
     @Autowired
     ProductRepo productRepo;
-    private static final String UPLOAD_DIRECTORY="/"; //Path to be declared
+    public ProductController(ProductRepo productRepo) {
+        this.productRepo = productRepo;
+    }
     @PostMapping("/products")//Path to be declared
-    public ResponseEntity<?>  createProduct(@RequestBody ProductDTO product){
+    public ResponseEntity<ProductDTO>  createProduct(@RequestBody ProductDTO productDTO){
+        Product product1= toEntity(productDTO);
         return ResponseEntity.ok().build();
     }
 
