@@ -3,62 +3,57 @@ package com.twilight.ecommerceplatform.controller;
 import com.twilight.ecommerceplatform.DataToObjects.ProductDTO;
 import com.twilight.ecommerceplatform.entities.Product;
 import com.twilight.ecommerceplatform.repositories.ProductRepo;
+import com.twilight.ecommerceplatform.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
 @RequestMapping
 public class ProductController {
+    private final ProductService productService;
     @Autowired
-    ProductRepo productRepo;
-    public ProductController(ProductRepo productRepo) {
-        this.productRepo = productRepo;
-    }
-    @PostMapping("/products")//Path to be declared
-    public ResponseEntity<ProductDTO>  createProduct(@RequestBody ProductDTO productDTO){
-        Product product1= toEntity(productDTO);
-        return ResponseEntity.ok().build();
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+
     }
 
+    //Create Product
+    @PostMapping//Path to be declared
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO DTO=productService.createProduct(productDTO);
+        return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
+    }
+
+    //Get All Products
     @GetMapping("/viewitem")
-    public String getAllProducts(Model model){
-        List<Product> product = productRepo.findAll();
-        model.addAttribute("product",product);
-        return "viewitem";
-    }
-
-    @RequestMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long id){
-        productRepo.deleteById(id);
-        return "redirect:/viewitem";
-    }
-
-    @RequestMapping("/find/{id}")
-    public String getProduct(@PathVariable("id") Long id, Model model){
-        Product product = productRepo.findById(id).orElseThrow();
-        model.addAttribute("product",product);
-        return "updateForm";
+    public ResponseEntity<List<Product>> getAllProduct(){
+        return ResponseEntity.ok(productService.getAllProducts());
 
     }
-
-    @PostMapping ("/update")
-    public ResponseEntity<?>  updateProduct(@RequestBody ProductDTO product){
-        return ResponseEntity.ok().build();
+    //Get Products By Id
+    @PostMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id){
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
+    //Update product
+    @PostMapping ("/{id}")
+    public ResponseEntity<ProductDTO>  updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id){
+        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
+    }
+
+    //Delete Product
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id){
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }

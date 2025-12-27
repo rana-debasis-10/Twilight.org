@@ -5,6 +5,8 @@ import com.twilight.ecommerceplatform.entities.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring")
 public interface productMapper {
 

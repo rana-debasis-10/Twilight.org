@@ -41,8 +41,9 @@ public class ProductService {
     }
 
     //Read Products by Id
-    public Product getProductById(long id){
-        return productRepo.findById(id).orElseThrow(() ->new RuntimeException("product not found"));
+    public ProductDTO getProductById(Long id){
+        Product product = productRepo.findById(id).orElseThrow(() -> new RuntimeException("product not found"));
+        return prodMapper.toProductDTO(product);
     }
 
     //Update Product
@@ -61,13 +62,5 @@ public class ProductService {
         productRepo.deleteById(id);
     }
 
-    public List<Long> getProductPrices(List<Long> prodIds){
-        return productRepo.findPriceByIds(prodIds);
-    }
-    public List<Product> getProducts(List<Long> prodIds) {
-        return productRepo.findAllById(prodIds);
-    }
-    public Product getProductById(Long prodId){
-        return productRepo.findById(prodId).orElse(null);
-    }
+
 }
