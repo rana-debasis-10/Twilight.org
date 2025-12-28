@@ -1,4 +1,4 @@
-package com.twilight.ecommerceplatform.dto;
+package com.twilight.ecommerceplatform.DataToObjects;
 
 import lombok.Data;
 

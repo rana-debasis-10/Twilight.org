@@ -1,9 +1,6 @@
 package com.twilight.ecommerceplatform.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 @Entity
@@ -24,4 +21,12 @@ public class Product {
     private String fileName;
     private String filePath;
     public boolean isAvailable;
+
+    @NotNull(message = "Please enter number of items")
+    private int prodQty;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ownwer_id", nullable= false)
+    protected User owner;
+
 }

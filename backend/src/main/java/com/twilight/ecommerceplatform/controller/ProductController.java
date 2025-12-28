@@ -1,50 +1,66 @@
 package com.twilight.ecommerceplatform.controller;
 
+import com.twilight.ecommerceplatform.DataToObjects.ProductDTO;
 import com.twilight.ecommerceplatform.entities.Product;
 import com.twilight.ecommerceplatform.repositories.ProductRepo;
+import com.twilight.ecommerceplatform.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Controller
+@RequestMapping
 public class ProductController {
+    private final ProductService productService;
     @Autowired
-    ProductRepo productRepo;
-    private static final String UPLOAD_DIRECTORY="/"; //Path to be declared
-    @PostMapping("/")//Path to be declared
-    public String addProduct(@RequestParam("productName")String prodName,
-                             @RequestParam("prouctCategory")String prodCat, @RequestParam("Price")int price,
-                             @RequestParam("productImage")MultipartFile file, Model model) {
-        Product product = new Product();
-        if(file.isEmpty()){
-            model.addAttribute("message", "Please select a file");
-            return "error";}
-        try {
-            File dir = new File(UPLOAD_DIRECTORY);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+    public ProductController(ProductService productService) {
+        this.productService = productService;
 
-            Path destPath= Paths.get(UPLOAD_DIRECTORY).resolve(Paths.get(file.getOriginalFilename()).normalize().toAbsolutePath());
-
-            Files.copy(file.getInputStream(), destPath, StandardCopyOption.REPLACE_EXISTING);
-            product.setFileName(file.getOriginalFilename());
-            product.setFilePath("/" + file.getOriginalFilename());
-            return "redirect:/"+prodCat+"/"+price; //Path to be declared
-        }catch (IOException e){
-            e.printStackTrace();
-            return "error";
-        }
     }
+
+    //Create Product
+    @PostMapping//Path to be declared
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, @RequestParam Long userId) {
+        ProductDTO DTO=productService.createProduct(productDTO, userId);
+        return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
+    }
+
+    //Get All Products
+    @GetMapping("/viewitem")
+    public ResponseEntity<List<Product>> getAllProduct(){
+        return ResponseEntity.ok(productService.getAllProducts());
+
+    }
+    //Get Products By Id
+    @PostMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id){
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    //Get Products by Owner
+    @PutMapping("/owwer/{ownerId")
+    public ResponseEntity<List<ProductDTO>> getProductByOwnerId(@PathVariable Long userId){
+        return ResponseEntity.ok(productService.getProductsByOwner(userId));
+    }
+
+    //Update product
+    @PostMapping ("/{id}")
+    public ResponseEntity<ProductDTO>  updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id, @RequestParam long userId){
+        ProductDTO updatedDTO=productService.updateProduct(id, productDTO, userId);
+        return ResponseEntity.ok(updatedDTO);
+    }
+
+    //Delete Product
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id, @RequestParam long userId){
+        productService.deleteProduct(id, userId);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

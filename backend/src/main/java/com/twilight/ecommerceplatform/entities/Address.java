@@ -1,6 +1,6 @@
 package com.twilight.ecommerceplatform.entities;
 
-import com.twilight.ecommerceplatform.dto.AddressDTO;
+import com.twilight.ecommerceplatform.DataToObjects.AddressDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
