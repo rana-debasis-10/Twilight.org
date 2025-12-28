@@ -25,8 +25,8 @@ public class ProductController {
 
     //Create Product
     @PostMapping//Path to be declared
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO DTO=productService.createProduct(productDTO);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, @RequestParam Long userId) {
+        ProductDTO DTO=productService.createProduct(productDTO, userId);
         return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
     }
 
@@ -42,16 +42,23 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
+    //Get Products by Owner
+    @PutMapping("/owwer/{ownerId")
+    public ResponseEntity<List<ProductDTO>> getProductByOwnerId(@PathVariable Long userId){
+        return ResponseEntity.ok(productService.getProductsByOwner(userId));
+    }
+
     //Update product
     @PostMapping ("/{id}")
-    public ResponseEntity<ProductDTO>  updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id){
-        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
+    public ResponseEntity<ProductDTO>  updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id, @RequestParam long userId){
+        ProductDTO updatedDTO=productService.updateProduct(id, productDTO, userId);
+        return ResponseEntity.ok(updatedDTO);
     }
 
     //Delete Product
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id){
-        productService.deleteProduct(id);
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id, @RequestParam long userId){
+        productService.deleteProduct(id, userId);
         return ResponseEntity.noContent().build();
     }
 

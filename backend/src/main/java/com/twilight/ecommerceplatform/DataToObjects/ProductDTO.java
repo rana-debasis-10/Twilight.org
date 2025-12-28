@@ -15,4 +15,5 @@ public class ProductDTO {
     private String prodCat;
     private String prodQty;
 
+    private long ownerId;
 }
