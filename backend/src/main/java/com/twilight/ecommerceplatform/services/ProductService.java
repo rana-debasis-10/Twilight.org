@@ -4,7 +4,7 @@ import com.twilight.ecommerceplatform.dto.ProductDTO;
 import com.twilight.ecommerceplatform.entities.Product;
 import com.twilight.ecommerceplatform.entities.User;
 import com.twilight.ecommerceplatform.enums.UserRole;
-import com.twilight.ecommerceplatform.mapper.productMapper;
+import com.twilight.ecommerceplatform.mapper.ProductMapper;
 import com.twilight.ecommerceplatform.repositories.ProductRepo;
 import com.twilight.ecommerceplatform.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,9 @@ public class ProductService {
     //mapping DTO to product
     private final ProductRepo productRepo;
     private final UserRepo userRepo;
-    private final productMapper prodMapper;
+    private final ProductMapper prodMapper;
     @Autowired
-    public ProductService(ProductRepo productRepo, productMapper prodMapper, UserRepo userRepo) {
+    public ProductService(ProductRepo productRepo, ProductMapper prodMapper, UserRepo userRepo) {
         this.productRepo = productRepo;
         this.prodMapper= prodMapper;
         this.userRepo = userRepo;
@@ -38,11 +38,11 @@ public class ProductService {
     //Create Product
     public ProductDTO createProduct(ProductDTO productDTO, long userId) {
         User owner = userRepo.findByUserId(userId);
-        if (owner.getRole() != UserRole.RESTAURENT_OWNER) {
+        if (owner.getRole() != UserRole.RESTAURANT_OWNER) {
             throw new RuntimeException("Only restaurant owners can create products");
         }
         Product product = prodMapper.toProduct(productDTO);
-        product.setOwner(owner);
+        product.setOwnerId(owner);
         return prodMapper.toProductDTO(productRepo.save(product));
     }
 
@@ -51,10 +51,13 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    //Read Products by Id
-    public ProductDTO getProductById(Long id){
-        return productRepo.findById(id).map(prodMapper::toProductDTO).orElseThrow(() -> new RuntimeException("product not found"));
+    //Read Products by ID
+    public ProductDTO getProductDTOById(Long id){
+        return productRepo.findById(id).map(prodMapper::toProductDTO).orElse(null);
 
+    }
+    public Product getProductById(Long id){
+        return productRepo.findById(id).orElse(null);
     }
 
     //Update Product
@@ -63,11 +66,11 @@ public class ProductService {
 
         User user = userRepo.findById(userId).orElseThrow(() ->new RuntimeException("user not found"));
 
-        if (user.getRole() != UserRole.RESTAURENT_OWNER){
+        if (user.getRole() != UserRole.RESTAURANT_OWNER){
             throw new RuntimeException("Only restaurant owners can update products");
         }
 
-        if(!product.getOwner().getUserId().equals(userId)){
+        if(!product.getOwnerId().getUserId().equals(userId)){
             throw new RuntimeException("Only restaurant owners can update products");
         }
 
@@ -87,10 +90,10 @@ public class ProductService {
         Product product = productRepo.findById(id).orElseThrow(() -> new RuntimeException("product not found"));
         User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        if (user.getRole() != UserRole.RESTAURENT_OWNER){
+        if (user.getRole() != UserRole.RESTAURANT_OWNER){
             throw new RuntimeException("Only restaurant owners can delete products");
         }
-        if (!product.getOwner().getUserId().equals(userId)){
+        if (!product.getOwnerId().getUserId().equals(userId)){
             throw new RuntimeException("Only restaurant owners can delete products");
         }
 

@@ -27,7 +27,8 @@ public class User {
     @NotNull(message = "PLEASE ENTER A NAME")
     private String name; // Name of User
 
-
+    @ValidMobileNumber
+    @NotNull
     private String mobNo; // Mobile Number of the User
 
     @Column(nullable = false)

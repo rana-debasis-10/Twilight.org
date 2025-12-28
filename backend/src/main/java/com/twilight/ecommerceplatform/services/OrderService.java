@@ -9,17 +9,19 @@ import com.twilight.ecommerceplatform.entities.*;
 import com.twilight.ecommerceplatform.enums.DeliveryStatus;
 import com.twilight.ecommerceplatform.enums.PaymentMethod;
 import com.twilight.ecommerceplatform.enums.PaymentStatus;
+import com.twilight.ecommerceplatform.mapper.ProductMapper;
 import com.twilight.ecommerceplatform.repositories.OrderEntityRepo;
 import com.twilight.ecommerceplatform.utility.Converter;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.Instant;
 import java.util.*;
-
+@Service
 public class OrderService {
     /// Razorpay public key
     @Value("${razorpay.key_id}")
@@ -47,6 +49,9 @@ public class OrderService {
     /// Order - Razorpay order and Order entity is for our database
     @Autowired
     private OrderEntityRepo orderEntityRepo;
+
+    @Autowired
+    private ProductMapper productMapper;
 
     /// Creating an Order By User to Create Order///////////////////////////////////
     public Map<String, Object> createOrder(OrderRequestDTO orderDetails , @ModelAttribute SessionUser sessionUser) throws Exception {
@@ -118,7 +123,7 @@ public class OrderService {
         orderEntity.setItems(orderItems);
         orderEntity.setPaymentStatus(PaymentStatus.PENDING);
         orderEntity.setPaymentMethod(orderDetails.getPaymentMethod());
-        orderEntity.setTimeStamp(Instant.now());
+        orderEntity.setCreatedAt(Instant.now());
 
         // --- Set Address safely ---
         if (orderDetails.getUseUserAddress()) {
@@ -149,7 +154,7 @@ public class OrderService {
         }
 
         // --- Set User ---
-        User user = userService.getById(sessionUser.getUserId());
+        User user = userService.getUser(sessionUser.getUserId());
         orderEntity.setUser(user);
 
         user.getOrders().add(orderEntity);
@@ -161,7 +166,7 @@ public class OrderService {
     /// View Orders in Batches of Ten For User to Create a Order/////////////////
     public List<OrderEntityResponseDTO> getOrderBatch(@ModelAttribute SessionUser sessionUser, int pageNum){
         Long userId=sessionUser.getUserId();
-        return orderEntityRepo.findByUserId(userId,PageRequest.of(pageNum,10)).getContent();
+        return orderEntityRepo.findByUser_UserId(userId,PageRequest.of(pageNum,10)).getContent();
     }
 
     /// For Admin View/////////////////////////////////////////////////////////

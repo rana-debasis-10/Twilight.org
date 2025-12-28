@@ -8,8 +8,4 @@ import java.util.List;
 
 @Repository
 public interface ProductRepo extends JpaRepository<Product, Long> {
-    List<Long> findPriceByIds(List<Long> ids);
-
-    List<Product> findbyOwnerID(Long ownerId);
-
 }

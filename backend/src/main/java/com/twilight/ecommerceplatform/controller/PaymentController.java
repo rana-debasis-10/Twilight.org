@@ -29,7 +29,8 @@ public class PaymentController {
             String paymentId = data.getRazorpayPaymentId();
             String signature = data.getRazorpaySignature();
 
-            String payload = STR."\{orderId}|\{paymentId}";
+            String payload = String.format("%s|%s", orderId, paymentId);
+
 
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(keySecret.getBytes(), "HmacSHA256"));

@@ -19,6 +19,8 @@ public class Address {
     private String postalCode;
     private String landMark;
 
+
+
     public static Address AddressDTO(AddressDTO addressDTO){
         Address address= new Address();
         address.setCity(addressDTO.getCity());

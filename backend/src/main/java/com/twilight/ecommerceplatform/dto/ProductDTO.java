@@ -1,5 +1,6 @@
 package com.twilight.ecommerceplatform.dto;
 
+import com.twilight.ecommerceplatform.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,12 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-    private String prodId;
     private String prodName;
-
-    private String price;
-    private String prodCat;
-    private String prodQty;
-
-    private long ownerId;
+    private Double price;
+    private Category prodCat;
+    private String prodImg;
+    private String description;
+    private Long ownerId;
 }

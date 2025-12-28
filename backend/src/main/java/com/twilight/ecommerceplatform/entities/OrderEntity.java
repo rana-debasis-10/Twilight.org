@@ -2,11 +2,13 @@ package com.twilight.ecommerceplatform.entities;
 
 import com.twilight.ecommerceplatform.annotations.ValidMobileNumber;
 import com.twilight.ecommerceplatform.enums.Currency;
+import com.twilight.ecommerceplatform.enums.DeliveryStatus;
 import com.twilight.ecommerceplatform.enums.PaymentMethod;
 import com.twilight.ecommerceplatform.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class OrderEntity {
     private PaymentStatus paymentStatus=PaymentStatus.UNVERIFIED;
     private PaymentMethod paymentMethod;
     private String receipt;
+    private DeliveryStatus deliveryStatus;
+    private Instant createdAt;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -35,6 +39,8 @@ public class OrderEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "addressId")
     private Address address;
+
+
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();

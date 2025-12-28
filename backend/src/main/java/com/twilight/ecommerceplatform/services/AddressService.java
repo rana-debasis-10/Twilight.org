@@ -21,8 +21,4 @@ public class AddressService {
         return addressRepo.findById(addressId).orElse(null);
     }
 
-    /// Finding address by user ID
-    public Address getByUserId(long userId){
-        return addressRepo.findByUserId(userId);
-    }
 }

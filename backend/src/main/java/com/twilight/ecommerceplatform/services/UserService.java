@@ -19,9 +19,10 @@ public class UserService {
         return userRepo.findAllById(userIds);
     }
     public Address getUserAddress(long userId){
-        return userRepo.findAddressById(userId);
+        return userRepo.findAddressByUserId(userId);
     }
     public void saveUser(User user){
         userRepo.save(user);
     }
+
 }

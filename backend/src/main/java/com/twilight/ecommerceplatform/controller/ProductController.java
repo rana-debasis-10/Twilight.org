@@ -34,20 +34,15 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
 
     }
-    //Get Products By Id
-    @PostMapping("/{id}")
+    //Get Products By ID
+    @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id){
-        return ResponseEntity.ok(productService.getProductById(id));
+        return ResponseEntity.ok(productService.getProductDTOById(id));
     }
 
-    //Get Products by Owner
-    @PutMapping("/owwer/{ownerId")
-    public ResponseEntity<List<ProductDTO>> getProductByOwnerId(@PathVariable Long userId){
-        return ResponseEntity.ok(productService.getProductsByOwner(userId));
-    }
 
     //Update product
-    @PostMapping ("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ProductDTO>  updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id, @RequestParam long userId){
         ProductDTO updatedDTO=productService.updateProduct(id, productDTO, userId);
         return ResponseEntity.ok(updatedDTO);
