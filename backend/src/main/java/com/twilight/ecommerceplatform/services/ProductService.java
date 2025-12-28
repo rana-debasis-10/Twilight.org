@@ -1,6 +1,6 @@
 package com.twilight.ecommerceplatform.services;
 
-import com.twilight.ecommerceplatform.DataToObjects.ProductDTO;
+import com.twilight.ecommerceplatform.dto.ProductDTO;
 import com.twilight.ecommerceplatform.entities.Product;
 import com.twilight.ecommerceplatform.entities.User;
 import com.twilight.ecommerceplatform.enums.UserRole;

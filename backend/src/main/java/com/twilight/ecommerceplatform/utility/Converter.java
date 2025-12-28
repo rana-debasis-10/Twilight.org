@@ -1,6 +1,6 @@
 package com.twilight.ecommerceplatform.utility;
 
-import com.twilight.ecommerceplatform.DataToObjects.AddressDTO;
+import com.twilight.ecommerceplatform.dto.AddressDTO;
 import com.twilight.ecommerceplatform.entities.Address;
 import com.twilight.ecommerceplatform.entities.OrderItem;
 import com.twilight.ecommerceplatform.entities.Product;
