@@ -8,6 +8,7 @@ import com.twilight.ecommerceplatform.dto.UserDTO;
 import com.twilight.ecommerceplatform.entities.*;
 import com.twilight.ecommerceplatform.enums.PaymentMethod;
 import com.twilight.ecommerceplatform.enums.PaymentStatus;
+import com.twilight.ecommerceplatform.mapper.userMapper;
 import com.twilight.ecommerceplatform.utility.Converter;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,7 +138,7 @@ public class OrderService {
         orderEntity.setUser(user);
         user.getOrders().add(orderEntity);
         UserDTO userDTO = new UserDTO();
-
+        userDTO = userMapper.toUserDTO(user);
         userService.saveUser(user);
 
         return response;

@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,10 +31,20 @@ public class UserController {
 
 
     //Login
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
         return ResponseEntity.ok(userService.login(loginRequestDTO));
     }
+
+    //Admin only
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers(
+            @RequestParam Long adminId) {
+
+        return ResponseEntity.ok(userService.getAllUsers(adminId));
+    }
+
+
 }
 
