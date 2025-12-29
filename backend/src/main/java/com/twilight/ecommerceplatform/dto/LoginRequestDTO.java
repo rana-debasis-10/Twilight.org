@@ -1,7 +1,6 @@
-package com.twilight.ecommerceplatform.DataToObjects;
+package com.twilight.ecommerceplatform.dto;
 
 import lombok.Data;
-import org.mapstruct.Mapping;
 
 @Data
 public class LoginRequestDTO {

@@ -1,19 +1,12 @@
 package com.twilight.ecommerceplatform.controller;
 
-import com.twilight.ecommerceplatform.DataToObjects.LoginRequestDTO;
-import com.twilight.ecommerceplatform.DataToObjects.LoginResponseDTO;
-import com.twilight.ecommerceplatform.DataToObjects.UserDTO;
-import com.twilight.ecommerceplatform.componenets.SessionUser;
-import com.twilight.ecommerceplatform.entities.User;
-import com.twilight.ecommerceplatform.repositories.UserRepo;
+import com.twilight.ecommerceplatform.dto.LoginRequestDTO;
+import com.twilight.ecommerceplatform.dto.LoginResponseDTO;
+import com.twilight.ecommerceplatform.dto.UserDTO;
 import com.twilight.ecommerceplatform.services.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 

@@ -1,14 +1,12 @@
 package com.twilight.ecommerceplatform.controller;
 
-import com.twilight.ecommerceplatform.DataToObjects.ProductDTO;
+import com.twilight.ecommerceplatform.dto.ProductDTO;
 import com.twilight.ecommerceplatform.entities.Product;
-import com.twilight.ecommerceplatform.repositories.ProductRepo;
 import com.twilight.ecommerceplatform.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,16 +1,14 @@
 package com.twilight.ecommerceplatform.services;
 
-import com.twilight.ecommerceplatform.DataToObjects.LoginRequestDTO;
-import com.twilight.ecommerceplatform.DataToObjects.LoginResponseDTO;
-import com.twilight.ecommerceplatform.DataToObjects.UserDTO;
+import com.twilight.ecommerceplatform.dto.LoginRequestDTO;
+import com.twilight.ecommerceplatform.dto.LoginResponseDTO;
+import com.twilight.ecommerceplatform.dto.UserDTO;
 import com.twilight.ecommerceplatform.entities.Address;
 import com.twilight.ecommerceplatform.entities.User;
 import com.twilight.ecommerceplatform.enums.UserRole;
 import com.twilight.ecommerceplatform.mapper.userMapper;
 import com.twilight.ecommerceplatform.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 

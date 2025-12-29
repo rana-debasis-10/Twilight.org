@@ -1,6 +1,6 @@
 package com.twilight.ecommerceplatform.mapper;
 
-import com.twilight.ecommerceplatform.DataToObjects.ProductDTO;
+import com.twilight.ecommerceplatform.dto.ProductDTO;
 import com.twilight.ecommerceplatform.entities.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

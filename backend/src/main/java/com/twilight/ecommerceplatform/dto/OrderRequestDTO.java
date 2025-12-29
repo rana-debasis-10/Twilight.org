@@ -1,4 +1,4 @@
-package com.twilight.ecommerceplatform.DataToObjects;
+package com.twilight.ecommerceplatform.dto;
 
 
 import com.twilight.ecommerceplatform.annotations.ValidMobileNumber;

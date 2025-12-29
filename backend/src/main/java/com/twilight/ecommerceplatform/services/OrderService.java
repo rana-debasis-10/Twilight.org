@@ -2,8 +2,9 @@ package com.twilight.ecommerceplatform.services;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.twilight.ecommerceplatform.DataToObjects.OrderRequestDTO;
+import com.twilight.ecommerceplatform.dto.OrderRequestDTO;
 import com.twilight.ecommerceplatform.componenets.SessionUser;
+import com.twilight.ecommerceplatform.dto.UserDTO;
 import com.twilight.ecommerceplatform.entities.*;
 import com.twilight.ecommerceplatform.enums.PaymentMethod;
 import com.twilight.ecommerceplatform.enums.PaymentStatus;
@@ -134,8 +135,9 @@ public class OrderService {
         // --- Set User ---
         User user = userService.getUser(sessionUser.getUserId());
         orderEntity.setUser(user);
-
         user.getOrders().add(orderEntity);
+        UserDTO userDTO = new UserDTO();
+
         userService.saveUser(user);
 
         return response;
