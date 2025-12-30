@@ -1,0 +1,658 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #faf9f7;
+  color: #2d2520;
+}
+
+/* NAVBAR */
+.navbar {
+  position: absolute;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  z-index: 50;
+}
+
+.navbar-container {
+  max-width: 1280px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  color: white;
+  letter-spacing: 2px;
+}
+
+.nav-links a {
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  transition: .2s;
+}
+
+.nav-links a:hover {
+  background: rgba(255,255,255,.1);
+}
+
+.signup-btn {
+  border: 1px solid rgba(255,255,255,.3);
+}
+
+/* HERO */
+.hero {
+  min-height: 70vh;
+  background: linear-gradient(135deg,#8b2942,#a85a3a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-blur {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+}
+
+.blur-one {
+  width: 20rem;
+  height: 20rem;
+  background: rgba(232,121,59,.2);
+  top: -10rem;
+  right: -10rem;
+}
+
+.blur-two {
+  width: 15rem;
+  height: 15rem;
+  background: rgba(255,255,255,.1);
+  bottom: -5rem;
+  left: -5rem;
+}
+
+.hero-content {
+  text-align: center;
+  color: white;
+  z-index: 2;
+}
+
+.hero-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+}
+
+.hero-content p {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+/* SEARCH BAR */
+.search-bar {
+  background: white;
+  border-radius: .75rem;
+  padding: .5rem;
+  display: flex;
+  gap: .5rem;
+  box-shadow: 0 16px 48px -12px rgba(0,0,0,.15);
+}
+
+.location-input,
+.search-input {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1rem;
+  background: #f5f3f0;
+  border-radius: .5rem;
+}
+
+.search-input {
+  flex: 1;
+}
+
+input {
+  border: none;
+  background: transparent;
+  outline: none;
+}
+
+/* SERVICES */
+.services {
+  padding: 4rem 1rem;
+  max-width: 1280px;
+  margin: auto;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+  gap: 1.5rem;
+}
+
+.service-card {
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,.12);
+  transition: .3s;
+}
+
+.service-card:hover img {
+  transform: scale(1.05);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: .5s;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-content h3 {
+  font-family: 'Playfair Display', serif;
+}
+
+/* FOOTER */
+.footer {
+  border-top: 1px solid #e8e1d9;
+  padding: 3rem 1rem;
+}
+
+.footer-container {
+  max-width: 1280px;
+  margin: auto;
+  text-align: center;
+}
+
+.footer h2 {
+  font-family: 'Playfair Display', serif;
+  color: #a83248;
+}
+
+.footer p {
+  color: #6b5f56;
+  font-size: .875rem;
+}
+
+.footer-bottom {
+  margin-top: 2rem;
+  border-top: 1px solid #e8e1d9;
+  padding-top: 1rem;
+}
+
+/* RESPONSIVE */
+@media (max-width:768px) {
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+  .nav-links {
+    display: none;
+  }
+}
+/* ===============================
+   Twilight – Global Styles
+   Cute Yellow Theme
+   =============================== */
+
+:root {
+  --yellow-main: #ffd84d;
+  --yellow-soft: #fff4cc;
+  --yellow-dark: #f4c430;
+  --accent-pink: #ff7aa2;
+  --accent-blue: #4da6ff;
+  --text-dark: #2b2b2b;
+  --text-light: #6b6b6b;
+  --white: #ffffff;
+  --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --transition: all 0.25s ease-in-out;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
+    sans-serif;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  background: linear-gradient(
+    180deg,
+    var(--yellow-soft) 0%,
+    #fffaf0 100%
+  );
+  color: var(--text-dark);
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+p {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--accent-pink);
+}
+
+/* Buttons */
+button {
+  border: none;
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  background: var(--yellow-main);
+  color: var(--text-dark);
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: var(--shadow-soft);
+}
+
+button:hover {
+  background: var(--yellow-dark);
+  transform: translateY(-1px);
+}
+
+button.secondary {
+  background: var(--accent-blue);
+  color: var(--white);
+}
+
+button.secondary:hover {
+  background: #3d92e6;
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid #e6e6e6;
+  outline: none;
+  font-size: 0.95rem;
+  background: var(--white);
+  transition: var(--transition);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--yellow-dark);
+  box-shadow: 0 0 0 3px rgba(244, 196, 48, 0.25);
+}
+
+/* Containers */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 18px;
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* Navbar Placeholder */
+#foodNavbar,
+#navbar {
+  background: var(--yellow-main);
+  box-shadow: var(--shadow-soft);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Footer */
+#footer {
+  background: var(--yellow-main);
+  margin-top: 40px;
+  padding: 40px 20px;
+}
+
+/* Alerts */
+#alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  display: none;
+  z-index: 9999;
+  box-shadow: var(--shadow-soft);
+}
+
+/* Utility */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Cute Animations */
+@keyframes popIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop {
+  animation: popIn 0.25s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 14px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+/* ===============================
+   Twilight – Global Styles
+   Cute Rose / Maroon Theme
+   =============================== */
+
+:root {
+  /* Core Palette (from your image) */
+  --rose-main: #9e3a44;
+  --rose-soft: #f7e6e8;
+  --rose-dark: #7f2d35;
+
+  /* Cute Accents */
+  --peach: #ffb3b8;
+  --cream: #fff6ef;
+  --lavender: #c7b7ff;
+
+  /* Text */
+  --text-dark: #2a1f22;
+  --text-light: #6f4a50;
+  --white: #ffffff;
+
+  /* UI */
+  --shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.12);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --transition: all 0.25s ease;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: linear-gradient(
+    180deg,
+    var(--rose-soft) 0%,
+    var(--cream) 100%
+  );
+  color: var(--text-dark);
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 600;
+  color: var(--rose-dark);
+}
+
+p {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  line-height: 1.65;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: var(--rose-main);
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--rose-dark);
+}
+
+/* Buttons */
+button {
+  border: none;
+  cursor: pointer;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    135deg,
+    var(--rose-main),
+    var(--rose-dark)
+  );
+  color: var(--white);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+button:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: linear-gradient(
+    135deg,
+    var(--rose-dark),
+    var(--rose-main)
+  );
+}
+
+button.soft {
+  background: var(--peach);
+  color: var(--rose-dark);
+}
+
+button.soft:hover {
+  background: #ffa1a8;
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: var(--radius-md);
+  border: 1px solid #e5c2c6;
+  background: var(--white);
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+input::placeholder {
+  color: #b8898f;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--rose-main);
+  box-shadow: 0 0 0 3px rgba(158, 58, 68, 0.25);
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px;
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* Navbar */
+#navbar,
+#foodNavbar {
+  background: linear-gradient(
+    135deg,
+    var(--rose-main),
+    var(--rose-dark)
+  );
+  color: var(--white);
+  box-shadow: var(--shadow-soft);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Footer */
+#footer {
+  background: var(--rose-main);
+  color: var(--white);
+  padding: 50px 20px;
+  margin-top: 60px;
+}
+
+/* Alerts */
+#alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  color: var(--white);
+  display: none;
+  z-index: 9999;
+  box-shadow: var(--shadow-soft);
+  animation: popIn 0.25s ease;
+}
+
+/* Utility */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Cute Animation */
+@keyframes popIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop {
+  animation: popIn 0.25s ease;
+}
+
+/* Scrollbar (cute touch) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--rose-soft);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rose-main);
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+

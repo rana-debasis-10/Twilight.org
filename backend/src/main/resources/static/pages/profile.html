@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Twilight | Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="../styles/profile.css" />
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header id="foodNavbar"></header>
+
+    <!-- Alert -->
+    <div id="alert"></div>
+
+    <!-- Profile Section -->
+    <main class="profileContainer">
+        <h2 id="profileUserName">User</h2>
+
+        <form>
+            <label>
+                Full Name
+                <input type="text" id="name" required />
+            </label>
+
+            <label>
+                Email
+                <input type="email" id="email" readonly />
+            </label>
+
+            <label>
+                Old Password
+                <input type="password" id="oldPass" required />
+            </label>
+
+            <label>
+                New Password
+                <input type="password" id="newPass" required />
+            </label>
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer"></footer>
+
+    <!-- Scripts -->
+    <script type="module" src="../scripts/pages/profile.js"></script>
+
+</body>
+</html>

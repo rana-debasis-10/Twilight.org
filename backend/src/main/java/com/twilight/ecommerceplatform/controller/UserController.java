@@ -1,55 +1,49 @@
 package com.twilight.ecommerceplatform.controller;
 
+import com.twilight.ecommerceplatform.dto.LoginRequestDTO;
+import com.twilight.ecommerceplatform.dto.LoginResponseDTO;
 import com.twilight.ecommerceplatform.dto.UserDTO;
-import com.twilight.ecommerceplatform.componenets.SessionUser;
-import com.twilight.ecommerceplatform.entities.User;
-import com.twilight.ecommerceplatform.enums.UserRole;
-import com.twilight.ecommerceplatform.repositories.UserRepo;
+import com.twilight.ecommerceplatform.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @SessionAttributes("sessionUser")
+
+@RestController
+@RequestMapping("/api/users")
 public class UserController {
-    public SessionUser sessionUser() {return new SessionUser();}
     @Autowired
-    UserRepo userRepo;
+    private  UserService userService;
 
-    @PostMapping("/signUp")
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, HttpSession session){
-        return ResponseEntity.ok().build();
+
+    //Register
+    @PostMapping("/register")
+    public ResponseEntity<Object> registerUser(@RequestBody UserDTO userDTO){
+        UserDTO newUser= userService.saveUser(userDTO);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+
     }
 
-//Login Process
-    @PostMapping("/signIn") //path to be declared
-    public String signIn(@RequestParam("id") long id, @RequestParam("password") String password, HttpSession session, ModelMap model) {
-    User user = userRepo.findByUserId((id));
-    if (user != null) {
-        UserRole role=user.getRole();
-        //redirect to home page
-        if (role == UserRole.CUSTOMER) {
 
-            session.setAttribute("sessionUser", user); // login successful
-
-        }
-        return ""; //Index
-    }
-    else {
-        model.put("message", "Invalid user id");
-        return "sign-in";
+    //Login
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
+        return ResponseEntity.ok(userService.login(loginRequestDTO));
     }
 
-}
+    //Admin only
 
-//Logging Out of the session
-    @GetMapping("/logout") // path to be declared
-    public String logout(HttpSession session) {
-        session.removeAttribute("sessionUser");
-        return "index";
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers(
+            @RequestParam Long adminId) {
+
+        return ResponseEntity.ok(userService.getAllUsers(adminId));
     }
 }
-

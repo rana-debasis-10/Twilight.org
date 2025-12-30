@@ -38,7 +38,7 @@ public class ProductService {
     //Create Product
     public ProductDTO createProduct(ProductDTO productDTO, long userId) {
         User owner = userRepo.findByUserId(userId);
-        if (owner.getRole() != UserRole.RESTAURANT_OWNER) {
+        if (owner.getRole() != UserRole.RESTAURENT_OWNER) {
             throw new RuntimeException("Only restaurant owners can create products");
         }
         Product product = prodMapper.toProduct(productDTO);
@@ -66,7 +66,7 @@ public class ProductService {
 
         User user = userRepo.findById(userId).orElseThrow(() ->new RuntimeException("user not found"));
 
-        if (user.getRole() != UserRole.RESTAURANT_OWNER){
+        if (user.getRole() != UserRole.RESTAURENT_OWNER){
             throw new RuntimeException("Only restaurant owners can update products");
         }
 
@@ -90,7 +90,7 @@ public class ProductService {
         Product product = productRepo.findById(id).orElseThrow(() -> new RuntimeException("product not found"));
         User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        if (user.getRole() != UserRole.RESTAURANT_OWNER){
+        if (user.getRole() != UserRole.RESTAURENT_OWNER){
             throw new RuntimeException("Only restaurant owners can delete products");
         }
         if (!product.getOwnerId().getUserId().equals(userId)){

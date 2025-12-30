@@ -1,0 +1,94 @@
+/* ===============================
+   Twilight – address-book.css
+   Cute global page styling
+   =============================== */
+
+:root {
+  --primary: #9b3743;
+  --primary-soft: #f7d6da;
+  --accent: #ffd966;
+  --bg: #fff8f9;
+  --text: #2b2b2b;
+  --card: #ffffff;
+  --radius: 14px;
+  --shadow: 0 10px 25px rgba(155,55,67,0.15);
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+h1, h2, h3 {
+  color: var(--primary);
+}
+
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.alert {
+  background: var(--primary);
+  color: white;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #777;
+}
+
+.page-address-book {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

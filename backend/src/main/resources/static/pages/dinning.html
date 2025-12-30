@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Twilight | Dining Out</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/global.css" />
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+</head>
+<body>
+
+    <!-- Alert -->
+    <div id="alert"></div>
+
+    <!-- Login / Signup Modal -->
+    <div id="UserSIgnUpLogInModal" style="display:none;"></div>
+
+    <!-- Navbar -->
+    <header>
+        <div id="foodNavbar"></div>
+        <div id="selectionNavbar"></div>
+    </header>
+
+    <!-- Filters -->
+    <section class="filters">
+        <button id="ratingH2L">Rating</button>
+        <button id="deliveryH2L">Distance</button>
+        <button id="multipleFilters">More Filters</button>
+    </section>
+
+    <!-- Content -->
+    <main>
+        <div id="noDataFound" style="display:none;">
+            <p>No dining places found</p>
+        </div>
+
+        <div class="itemsContainer"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer"></footer>
+
+    <!-- Scripts -->
+    <script type="module" src="../scripts/pages/dinning.js"></script>
+
+</body>
+</html>

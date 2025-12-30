@@ -1,5 +1,6 @@
 package com.twilight.ecommerceplatform.dto;
 
+import com.twilight.ecommerceplatform.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,6 @@ public class UserDTO {
     private String mobNo;
     private String email;
     private String address;
-    private String role;
+    private UserRole role;
     private String password;
 }

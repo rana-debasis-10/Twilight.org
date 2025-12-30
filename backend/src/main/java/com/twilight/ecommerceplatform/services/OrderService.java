@@ -10,6 +10,7 @@ import com.twilight.ecommerceplatform.enums.DeliveryStatus;
 import com.twilight.ecommerceplatform.enums.PaymentMethod;
 import com.twilight.ecommerceplatform.enums.PaymentStatus;
 import com.twilight.ecommerceplatform.mapper.ProductMapper;
+import com.twilight.ecommerceplatform.mapper.UserMapper;
 import com.twilight.ecommerceplatform.repositories.OrderEntityRepo;
 import com.twilight.ecommerceplatform.utility.Converter;
 import org.json.JSONObject;
@@ -52,6 +53,9 @@ public class OrderService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /// Creating an Order By User to Create Order///////////////////////////////////
     public Map<String, Object> createOrder(OrderRequestDTO orderDetails , @ModelAttribute SessionUser sessionUser) throws Exception {
@@ -158,12 +162,12 @@ public class OrderService {
         orderEntity.setUser(user);
 
         user.getOrders().add(orderEntity);
-        userService.saveUser(user);
+        userService.saveAsUser(user);
 
         return response;
     }
 
-    /// View Orders in Batches of Ten For User to Create a Order/////////////////
+    /// View Orders in Batches of Ten For User to Create Order/////////////////
     public List<OrderEntityResponseDTO> getOrderBatch(@ModelAttribute SessionUser sessionUser, int pageNum){
         Long userId=sessionUser.getUserId();
         return orderEntityRepo.findByUser_UserId(userId,PageRequest.of(pageNum,10)).getContent();
@@ -185,46 +189,29 @@ public class OrderService {
        return true;
     }
 
-    /// For Restraunt update //////////////////////////////////////////////
+    /// For Restaurant update //////////////////////////////////////////////
     public boolean updateStatusToPreparingFood(Long orderId){ OrderEntity order=orderEntityRepo.findById(orderId).get();
-        if(order!=null){
-            order.setDeliveryStatus(DeliveryStatus.FOOD_IS_BEING_PREPARED);
-            return true;
-        }
-        else{
-            return false;
-        }}
+        order.setDeliveryStatus(DeliveryStatus.FOOD_IS_BEING_PREPARED);
+        return true;
+    }
 
     /// For Driver Update /////////////////////////////////////////////////
-    public boolean updateStatusToDirverOnWay(Long orderId){ OrderEntity order=orderEntityRepo.findById(orderId).get();
-        if(order!=null){
-            order.setDeliveryStatus(DeliveryStatus.DRIVER_IS_ON_THE_WAY);
-            return true;
-        }
-        else{
-            return false;
-        }}
+    public boolean updateStatusToDriverOnWay(Long orderId){ OrderEntity order=orderEntityRepo.findById(orderId).get();
+        order.setDeliveryStatus(DeliveryStatus.DRIVER_IS_ON_THE_WAY);
+        return true;
+    }
 
     ///  For Driver Update ///////////////////////////////////////////////
     public boolean updateStatusToDelivered(Long orderId){ OrderEntity order=orderEntityRepo.findById(orderId).get();
-        if(order!=null){
-            order.setDeliveryStatus(DeliveryStatus.ORDER_CANCELLED);
-            return true;
-        }
-        else{
-            return false;
-        }}
+        order.setDeliveryStatus(DeliveryStatus.ORDER_CANCELLED);
+        return true;
+    }
 
     /// Cancelled due to unavoidable circumstances //////////////////////
     public boolean updateStatusToCancelled(Long orderId){
         OrderEntity order=orderEntityRepo.findById(orderId).get();
-        if(order!=null){
-            order.setDeliveryStatus(DeliveryStatus.ORDER_CANCELLED);
-            return true;
-        }
-        else{
-            return false;
-        }
+        order.setDeliveryStatus(DeliveryStatus.ORDER_CANCELLED);
+        return true;
     }
 
 }
