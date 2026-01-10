@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Twilight | Checkout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="../styles/checkout.css" />
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div id="foodNavbar"></div>
+
+    <!-- Alert -->
+    <div id="alert"></div>
+
+    <!-- Main Checkout Section -->
+    <main class="checkout-container">
+        <h2>Checkout</h2>
+
+        <section class="address-section">
+            <h3>Delivery Address</h3>
+            <textarea
+                id="deliveryAddress"
+                placeholder="Enter your delivery address"
+                required
+            ></textarea>
+        </section>
+
+        <section class="payment-section">
+            <h3>Payment Method</h3>
+
+            <label>
+                <input type="radio" name="payment" checked />
+                Cash on Delivery
+            </label>
+
+            <label>
+                <input type="radio" name="payment" />
+                Online Payment
+            </label>
+        </section>
+
+        <section class="summary-section">
+            <h3>Order Summary</h3>
+            <div id="orderItems"></div>
+            <p class="total">
+                Total Amount: ₹ <span id="totalAmount">0</span>
+            </p>
+        </section>
+
+        <button id="placeOrderBtn">
+            <i class="fa-solid fa-check"></i> Place Order
+        </button>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Script -->
+    <script type="module" src="../scripts/checkout.js"></script>
+</body>
+</html>

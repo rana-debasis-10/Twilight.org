@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Twilight | Add Restaurant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="../styles/add-restaurant.css" />
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div id="foodNavbar"></div>
+
+    <!-- Alert -->
+    <div id="alert"></div>
+
+    <!-- Main Container -->
+    <main class="add-restaurant-container">
+        <h2>Add Your Restaurant to Twilight</h2>
+
+        <form id="addRestaurantForm">
+            <input type="text" id="restaurantname" placeholder="Restaurant Name" required />
+            <input type="text" id="restoaddress" placeholder="Restaurant Address" required />
+            <input type="text" id="restaurantmob" placeholder="Mobile Number" required />
+            <input type="text" id="restaurnatlandline" placeholder="Landline Number" />
+            <input type="text" id="restaurantownerfullname" placeholder="Owner Full Name" required />
+            <input type="email" id="restaurantowneremail" placeholder="Owner Email" required />
+            <input type="text" id="restaurantownermob" placeholder="Owner Mobile Number" required />
+            <input type="url" id="restaurantImageUrl" placeholder="Restaurant Image URL" required />
+
+            <button class="nextbluebutton" type="submit">
+                Register Restaurant
+            </button>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Script -->
+    <script type="module" src="../scripts/add-restaurant.js"></script>
+</body>
+</html>

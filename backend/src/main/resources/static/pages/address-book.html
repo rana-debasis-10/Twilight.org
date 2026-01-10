@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Twilight | Address Book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="../styles/address-book.css" />
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div id="foodNavbar"></div>
+
+    <!-- Alert -->
+    <div id="alert"></div>
+
+    <!-- Main Content -->
+    <main class="address-book-container">
+        <h2>Saved Addresses</h2>
+
+        <div id="addressList">
+            <!-- Address cards injected via JS -->
+            <!--
+            <div class="address-card">
+                <h3>Home</h3>
+                <p>12, MG Road, Bengaluru</p>
+                <div class="actions">
+                    <button>Edit</button>
+                    <button class="danger">Delete</button>
+                </div>
+            </div>
+            -->
+        </div>
+
+        <button id="addNewAddressBtn">
+            <i class="fa-solid fa-plus"></i> Add New Address
+        </button>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Script -->
+    <script type="module" src="../scripts/address-book.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Twilight | Cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="../styles/cart.css" />
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+</head>
+<body>
+
+    <!-- Alert -->
+    <div id="alert"></div>
+
+    <!-- Empty Cart -->
+    <section id="emptyCart" style="display:none;">
+        <h2>Your cart is empty</h2>
+        <p>Add items to get started</p>
+    </section>
+
+    <!-- Cart Data -->
+    <section id="divForCartDataUpperDiv" style="display:none;">
+        <div id="divForCartData"></div>
+
+        <!-- Bill Summary -->
+        <div class="billSection">
+            <div class="billRow">
+                <span>Item Total</span>
+                <span>₹ <span id="ItemTotal">0</span></span>
+            </div>
+            <div class="billRow">
+                <span>Promo Discount</span>
+                <span>- ₹ <span id="offByPromo">0</span></span>
+            </div>
+            <div class="billRow total">
+                <strong>Total</strong>
+                <strong>₹ <span id="amountTotal">0</span></strong>
+            </div>
+
+            <div class="promoSection">
+                <input
+                    type="text"
+                    id="promoCodeValue"
+                    placeholder="Enter promo code"
+                />
+                <button id="applyPromoCode">Apply</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script -->
+    <script src="../scripts/cart.js"></script>
+
+</body>
+</html>
