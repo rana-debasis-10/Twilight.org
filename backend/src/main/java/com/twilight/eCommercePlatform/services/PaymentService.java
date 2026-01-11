@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentService {
-    @Value("${razorpay.key_secret}")
+    @Value("${razorpay.key.secret}")
     private String keySecret;
     @Value("${razorpay.webhook.secret}")
     private String webhookSecret;

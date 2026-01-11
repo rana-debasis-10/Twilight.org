@@ -1,5 +1,6 @@
 package com.twilight.eCommercePlatform.restController;
 
+import com.twilight.eCommercePlatform.dto.entity.ProductDTO;
 import com.twilight.eCommercePlatform.entities.*;
 import com.twilight.eCommercePlatform.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminRestController {
     @Autowired
     private OrderService orderService;
@@ -19,7 +20,7 @@ public class AdminRestController {
     @Autowired
     private AddressService addressService;
     @Autowired
-    private OrderItemService orderItemService;
+    private ProductService productService;
     @Autowired
     private RestaurantService restaurantService;
 
@@ -39,5 +40,9 @@ public class AdminRestController {
     @GetMapping("/restaurants/{pageNum}")
     public List<Restaurant> getAllRestaurant(@PathVariable int pageNum){
         return restaurantService.getAllRestaurant(pageNum);
+    }
+    @GetMapping("/product/{pageNum}")
+    public List<Product> getAllProduct(@PathVariable int pageNum){
+        return productService.getAllProducts(pageNum);
     }
 }

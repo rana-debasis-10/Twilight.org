@@ -26,11 +26,11 @@ import java.util.*;
 public class OrderService {
 
     /// Razorpay public key
-    @Value("${razorpay.key_id}")
+    @Value("${razorpay.key.id}")
     private String keyId;
 
     /// Razorpay private key
-    @Value("${razorpay.key_secret}")
+    @Value("${razorpay.key.secret}")
     private String keySecret;
 
 

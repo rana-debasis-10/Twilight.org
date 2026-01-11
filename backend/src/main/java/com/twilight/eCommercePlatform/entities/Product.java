@@ -23,7 +23,7 @@ public class Product {
     @NotNull(message = "Please upload an image")
     private String img;
 
-    public boolean available;
+    public boolean available= true;
 
     private String description;
 
