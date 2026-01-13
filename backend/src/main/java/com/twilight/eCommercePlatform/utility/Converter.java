@@ -24,6 +24,7 @@ public class Converter {
         orderItem.setProdId(product.getId());
         orderItem.setPrice(product.getPrice());
         orderItem.setProdName(product.getName());
+        System.out.println("Converted to Product");
         return orderItem;
     }
 
@@ -36,7 +37,7 @@ public class Converter {
             Long productId = entry.getKey();
             Integer quantity = entry.getValue();
 
-            Product product = productService.getProductById(productId);
+            Product product = productService.getProduct(productId);
             if (product == null) {
                 continue;
             }
@@ -58,7 +59,7 @@ public class Converter {
                 orderItems.add(orderItem);
             }
         }
-
+        System.out.println("Converted successfully did its work");
         return orderItems;
     }
 

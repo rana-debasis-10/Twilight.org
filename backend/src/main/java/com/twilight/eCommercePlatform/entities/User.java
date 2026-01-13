@@ -1,6 +1,8 @@
 package com.twilight.eCommercePlatform.entities;
 
+import com.twilight.eCommercePlatform.annotations.ValidEmail;
 import com.twilight.eCommercePlatform.annotations.ValidMobileNumber;
+import com.twilight.eCommercePlatform.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -19,10 +21,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-
     @NotNull(message = "Enter a name")
     private String name;
 
+    @ValidEmail
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -33,18 +35,21 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated (EnumType.STRING)
+    private UserRole role;
+
     private boolean accountNonExpired = true;
-    private boolean accountNotLocked = true;
+    private boolean accountNonLocked = true;
     private boolean credentialsNonExpired=true;
     private boolean enabled = true;
 
-
-
-    @ManyToOne(fetch = FetchType.EAGER) // Using LAZY for better performance
-    @JoinColumn(name = "roleId", nullable = false)
-    private Role role; //Role of the user
-
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<OrderEntity> orders=new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Driver driver;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private RestaurantOwner restaurantOwner;
+
 }

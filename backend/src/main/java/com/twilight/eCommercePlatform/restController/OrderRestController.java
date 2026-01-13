@@ -15,13 +15,7 @@ public class OrderRestController {
     private OrderService orderService;
 
     @PostMapping("/create-order")
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO order) {
-
-        try {
-            return ResponseEntity.ok(orderService.createOrder(order));
-
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error creating order");
-        }
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO order) throws Exception {
+        return ResponseEntity.ok(orderService.createOrder(order));
     }
 }

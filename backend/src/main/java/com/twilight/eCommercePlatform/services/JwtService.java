@@ -5,29 +5,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Service
 public class JwtService {
-    private final String secretKey ;
-
-    public JwtService() {
-
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGen.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @Value("${jwt.secret.key}")
+    private String secretKey ;
 
     public String generateToken(UserDetailsImpl userDetailsImpl) {
         Map<String, Object> claims = new HashMap<>();
@@ -36,10 +23,10 @@ public class JwtService {
 
         return Jwts.builder()
                 .setSubject(userDetailsImpl.getEmail())
-                .claim("role", userDetailsImpl.getRole().getUserRole().toString())
+                .claim("role", userDetailsImpl.getRole())
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() +1000L * 60 * 60 * 30))
                 .signWith(getKey())
                 .compact();
 

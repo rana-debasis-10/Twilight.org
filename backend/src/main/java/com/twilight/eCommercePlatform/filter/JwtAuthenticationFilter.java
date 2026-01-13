@@ -1,4 +1,5 @@
 package com.twilight.eCommercePlatform.filter;
+import com.twilight.eCommercePlatform.enums.UserRole;
 import com.twilight.eCommercePlatform.security.UserDetailsImpl;
 import com.twilight.eCommercePlatform.services.JwtService;
 import io.jsonwebtoken.Claims;
@@ -47,16 +48,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             List<String> authorityStrings = (List<String>) claims.get("authorities");
             String email= claims.getSubject();
 
-            String role = claims.get("role", String.class);
+            String roleStr = claims.get("role", String.class);
+            UserRole role = UserRole.valueOf(roleStr);
+
             Collection<GrantedAuthority> authorities = new ArrayList<>();
 
             authorityStrings.forEach(auth ->
                     authorities.add(new SimpleGrantedAuthority(auth))
             );
-            UserDetailsImpl userDetailsImpl= new UserDetailsImpl(email);
+            UserDetailsImpl userDetailsImpl= new UserDetailsImpl(email, role, true, true, true, true, authorities);
 
             authorities.add(
-                    new SimpleGrantedAuthority("ROLE_" + role)
+                    new SimpleGrantedAuthority("ROLE_" + role.toString())
             );
 
             UsernamePasswordAuthenticationToken authentication =

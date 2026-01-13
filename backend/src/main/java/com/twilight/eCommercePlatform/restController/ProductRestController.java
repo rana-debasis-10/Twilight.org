@@ -22,7 +22,7 @@ public class ProductRestController {
     }
 
     //Create Product
-    @PostMapping//Path to be declared
+    @PostMapping("/createProduct")//Path to be declared
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO DTO=productService.createProduct(productDTO);
         return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
@@ -30,21 +30,21 @@ public class ProductRestController {
 
     //Get All Products
     @GetMapping("/viewItem/{pageNum}")
-    public ResponseEntity<List<Product>> getAllProduct(@PathVariable int pageNum){
+    public ResponseEntity<List<ProductDTO>> getAllProduct(@PathVariable int pageNum){
         return ResponseEntity.ok(productService.getAllProducts(pageNum));
 
     }
     //Get Products By ID
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id){
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id){
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
 
     //Update product
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO>  updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id, @RequestParam long userId){
-        ProductDTO updatedDTO=productService.updateProduct(id, productDTO, userId);
+    public ResponseEntity<ProductDTO>  updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long restaurantId, @PathVariable Long id){
+        ProductDTO updatedDTO=productService.updateProduct(id,productDTO);
         return ResponseEntity.ok(updatedDTO);
     }
 

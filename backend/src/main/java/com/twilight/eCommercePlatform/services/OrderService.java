@@ -8,7 +8,6 @@ import com.twilight.eCommercePlatform.entities.*;
 import com.twilight.eCommercePlatform.enums.DeliveryStatus;
 import com.twilight.eCommercePlatform.enums.PaymentMethod;
 import com.twilight.eCommercePlatform.enums.PaymentStatus;
-import com.twilight.eCommercePlatform.mapper.AddressMapper;
 import com.twilight.eCommercePlatform.repositories.OrderEntityRepo;
 import com.twilight.eCommercePlatform.security.UserDetailsImpl;
 import com.twilight.eCommercePlatform.utility.Converter;
@@ -40,8 +39,6 @@ public class OrderService {
     @Autowired
     private OrderEntityRepo orderEntityRepo;
 
-    @Autowired
-    private AddressMapper addressMapper;
 
     @Autowired
     private Converter converter;
@@ -56,6 +53,7 @@ public class OrderService {
         for (OrderItem orderItem : orderItems) {
             amount += (long)orderItem.getSubtotal();
         }
+        System.out.println("Amount calculated Successfully");
 
         /// Receipt Creation
         String uuid = UUID.randomUUID().toString().replace("-", "");
@@ -67,6 +65,8 @@ public class OrderService {
         /// Getting user from security context holder
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         User user = userService.getUserByEmail(userDetailsImpl.getEmail());
+        System.out.println("User\n");
+        System.out.println(user+"\n");
 
         /// Response map
         Map<String, Object> response = new HashMap<>();
@@ -77,6 +77,7 @@ public class OrderService {
         if (orderDetails.getPaymentMethod() != PaymentMethod.CASH_ON_DELIVERY) {
 
             RazorpayClient client = new RazorpayClient(keyId, keySecret);
+            System.out.println("Unable to Create Razorpay Client");
 
             JSONObject req = new JSONObject();
             req.put("amount", amount * 100); // smallest currency unit
@@ -93,6 +94,7 @@ public class OrderService {
         } else {
             response.put("orderPlaced", "true");
         }
+        System.out.println("Response created");
 
         /// Build OrderEntity
 
@@ -105,11 +107,9 @@ public class OrderService {
         orderEntity.setPaymentStatus(PaymentStatus.PENDING);
         orderEntity.setPaymentMethod(orderDetails.getPaymentMethod());
         orderEntity.setCreatedAt(Instant.now());
-
-        /// Set Address
-
-        Address address =  addressMapper.toAddress(orderDetails.getAddress());
-
+        orderEntity.setUserEmail(user.getEmail());
+        orderEntity.setAddress(new Address(orderDetails.getAddress()));
+        System.out.println("Order Entity Build");
 
         /// Set mobile number
 
@@ -121,8 +121,13 @@ public class OrderService {
             throw new Exception("Mobile number is empty.");
         }
 
+        System.out.println("Mobile Number Checked and added ");
+        orderEntity.setUser(user);
+        orderItems.forEach(orderItem -> orderItem.setOrder(orderEntity));
         user.getOrders().add(orderEntity);
+
         userService.saveUser(user);
+        System.out.println("user Saved!");
 
         return response;
     }

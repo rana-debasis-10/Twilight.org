@@ -29,10 +29,10 @@ public class AuthRestController {
 
     /// Register
     @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@RequestBody @Valid UserDTO userDTO){
+    public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO){
         try {
-            User user= userService.saveAsUser(userDTO);
-            String token = jwtService.generateToken(new UserDetailsImpl(user));
+            UserDetailsImpl user= userService.saveAsUser(userDTO);
+            String token = jwtService.generateToken(user);
             return new ResponseEntity<>(token, HttpStatus.CREATED);
         }
         catch (Exception e){

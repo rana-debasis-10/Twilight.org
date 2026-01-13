@@ -2,60 +2,85 @@ package com.twilight.eCommercePlatform.services;
 
 import com.twilight.eCommercePlatform.dto.entity.ProductDTO;
 import com.twilight.eCommercePlatform.entities.Product;
-import com.twilight.eCommercePlatform.mapper.ProductMapper;
 import com.twilight.eCommercePlatform.repositories.ProductRepo;
+import com.twilight.eCommercePlatform.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
 
-    //mapping DTO to product
     @Autowired
     private ProductRepo productRepo;
+
     @Autowired
-    private ProductMapper prodMapper;
+    RestaurantOwnerService restaurantOwnerService;
 
-    //Saving the new product to product repo
-    public Product saveProduct(ProductDTO productDTO){
-        Product product = prodMapper.toProduct(productDTO);
-        return productRepo.save(product);
+    @Autowired
+    RestaurantService restaurantService;
+
+    public ProductDTO saveProduct(ProductDTO productDTO){
+        Product product =new Product(productDTO);
+        productRepo.save(product);
+        return productDTO;
     }
-    // Create Product
+
     public ProductDTO createProduct(ProductDTO productDTO) {
+        try {
+            Product product = new Product(productDTO);
+            productRepo.save(product);
+        }
+        catch (RuntimeException e) {
+            return null;
+        }
+        return productDTO;
+    }
 
-        Product product = prodMapper.toProduct(productDTO);
-        return prodMapper.toProductDTO(productRepo.save(product));
+    public List<ProductDTO> getAllProducts(int pageNum){
+        return productRepo.findAll(PageRequest.of(pageNum, 20))
+                .getContent()
+                .stream()
+                .map(ProductDTO::new)
+                .toList();
     }
-    // Read Products
-    public List<Product> getAllProducts(int pageNum){
-        return productRepo.findAll(PageRequest.of(pageNum,20)).getContent();
-    }
-    // Search product by name
+
     public List<Product> getProductByName(String name,int pageNum ){
         return productRepo.findByNameContainingIgnoreCase(name,PageRequest.of(pageNum,20)).getContent();
 
     }
-    // Get product By id
-    public Product getProductById(Long id){
+
+    public ProductDTO getProductById(Long id){
+        try{
+        return new ProductDTO(productRepo.findById(id).orElse(null));}
+        catch (NullPointerException e){
+            return null;
+        }
+    }
+    public Product getProduct(Long id){
         return productRepo.findById(id).orElse(null);
     }
-    //Update Product
-    public ProductDTO updateProduct(long id, ProductDTO productDTO, long userId) {
 
-
-        Product product= prodMapper.toProduct(productDTO);
-        return prodMapper.toProductDTO(productRepo.save(product));
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Product> product = productRepo.findByIdAndRestaurantId(id,restaurantService.getByEmail(userDetails.getEmail()).getId());
+        if(product.isPresent()){
+            Product.updateProduct(product.get(),productDTO);
+            productRepo.save(product.get());
+            return productDTO;
+        }
+        return null;
     }
 
-    // GET PRODUCTS BY OWNER
     public List<ProductDTO> getProductsByOwner(Long userId) {
         return productRepo.findById(userId)
                 .stream()
-                .map(prodMapper::toProductDTO).toList();
+                .map(ProductDTO::new)
+                .toList();
     }
 
     //Delete Product

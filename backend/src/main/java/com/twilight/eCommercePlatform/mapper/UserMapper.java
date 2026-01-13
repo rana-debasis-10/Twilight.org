@@ -2,15 +2,39 @@ package com.twilight.eCommercePlatform.mapper;
 
 import com.twilight.eCommercePlatform.dto.entity.UserDTO;
 import com.twilight.eCommercePlatform.entities.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.twilight.eCommercePlatform.enums.UserRole;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface UserMapper {
+@Component
+public class UserMapper {
 
-    UserDTO toDTO(User user);
+    public UserDTO toDTO(User user){
+        if ( user == null ) {
+            return null;
+        }
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName( user.getName() );
+        userDTO.setMobNo( user.getMobNo() );
+        userDTO.setEmail( user.getEmail() );
+        userDTO.setPassword( user.getPassword() );
 
-    @Mapping(target = "id", ignore = true)       // DB generated
-    @Mapping(target = "orders", ignore = true)   // Not part of DTO
-    User toUser(UserDTO dto);
+        return userDTO;
+    };
+    public User toUser(UserDTO dto){
+        if ( dto == null ) {
+            return null;
+        }
+        User user = new User();
+        user.setName( dto.getName() );
+        user.setEmail( dto.getEmail() );
+        user.setMobNo( dto.getMobNo() );
+        user.setPassword( dto.getPassword());
+        user.setRole(UserRole.CUSTOMER);
+        user.setEnabled(true);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+
+        return user;
+    };
 }
