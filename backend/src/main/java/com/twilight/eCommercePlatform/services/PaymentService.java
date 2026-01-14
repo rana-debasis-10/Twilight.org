@@ -3,8 +3,8 @@ package com.twilight.eCommercePlatform.services;
 
 import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
-import com.twilight.eCommercePlatform.dto.payment.PaymentResponseDTO;
-import com.twilight.eCommercePlatform.dto.payment.WebhookResponseDTO;
+import com.twilight.eCommercePlatform.dto.payment.PaymentResponse;
+import com.twilight.eCommercePlatform.dto.payment.WebhookResponse;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -18,7 +18,7 @@ public class PaymentService {
     private String webhookSecret;
 
     /// code to verify payment response
-    public HttpStatusCode verifyPayment(PaymentResponseDTO payment) {
+    public HttpStatusCode verifyPayment(PaymentResponse payment) {
         JSONObject options = new JSONObject();
         options.put("razorpay_order_id", payment.getRazorpayOrderId());
         options.put("razorpay_payment_id", payment.getRazorpayPaymentId());
@@ -36,7 +36,7 @@ public class PaymentService {
         }
     }
     /// code to verify webhook
-    public HttpStatusCode verifyWebhook(WebhookResponseDTO webhook){
+    public HttpStatusCode verifyWebhook(WebhookResponse webhook){
         try{
             if(Utils.verifyWebhookSignature(webhook.getPayload(), webhook.getSignature(), webhookSecret)){
                 return HttpStatusCode.valueOf(200);

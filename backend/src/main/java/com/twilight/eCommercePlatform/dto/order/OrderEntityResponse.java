@@ -7,7 +7,7 @@ import com.twilight.eCommercePlatform.enums.PaymentStatus;
 import java.time.Instant;
 
 /// For viewing order from database
-public class OrderEntityResponseDTO {
+public class OrderEntityResponse {
     /// Database Order Id
     private long orderId;
 

@@ -1,6 +1,6 @@
 package com.twilight.eCommercePlatform.restController;
 
-import com.twilight.eCommercePlatform.dto.order.OrderRequestDTO;
+import com.twilight.eCommercePlatform.dto.order.OrderRequest;
 import com.twilight.eCommercePlatform.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ public class OrderRestController {
     private OrderService orderService;
 
     @PostMapping("/create-order")
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO order) throws Exception {
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequest order) throws Exception {
         return ResponseEntity.ok(orderService.createOrder(order));
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 
 /// For creating order
 @Data
-public class OrderRequestDTO {
+public class OrderRequest {
 
     @NotNull
     @Valid

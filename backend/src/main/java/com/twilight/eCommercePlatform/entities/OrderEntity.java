@@ -46,8 +46,6 @@ public class OrderEntity {
     @JoinColumn(name = "addressId")
     private Address address;
 
-
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
 }

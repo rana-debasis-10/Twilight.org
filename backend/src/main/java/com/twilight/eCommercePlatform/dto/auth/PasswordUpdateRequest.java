@@ -1,12 +1,12 @@
 package com.twilight.eCommercePlatform.dto.auth;
 
 import com.twilight.eCommercePlatform.annotations.ValidEmail;
-import com.twilight.eCommercePlatform.enums.UserRole;
 import lombok.Data;
 
 @Data
-public class LoginRequestDTO {
+public class PasswordUpdateRequest {
     @ValidEmail
-    String email;
-    String password;
+    private String email;
+    private String oldPassword;
+    private String newPassword;
 }

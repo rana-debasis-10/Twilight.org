@@ -4,7 +4,7 @@ import lombok.Data;
 
 /// After order is created this is for response to the user
 @Data
-public class OrderResponseDTO {
+public class OrderResponse {
     private String OrderId;
     private int amount;
     private String currency;

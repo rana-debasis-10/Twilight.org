@@ -30,9 +30,9 @@ public class RestaurantService {
     public List<Restaurant> getRestaurantByNameContainingIgnoreCase(String name, int pageNum){
         return restaurantRepo.findByNameContainingIgnoreCase(name,PageRequest.of(pageNum,15)).getContent();
     }
-    public void createRestaurant(RestaurantDTO restaurantDTO, UserDetailsImpl userDetails){
+    public void createRestaurant(RestaurantDTO restaurantDTO, String email){
         Restaurant restaurant = new Restaurant(restaurantDTO);
-        User user = userService.getUserByEmail(userDetails.getEmail());
+        User user = userService.getUserByEmail(email);
         user.setRole(UserRole.RESTAURANT_OWNER);
         RestaurantOwner owner = new RestaurantOwner();
         owner.setEmail(user.getEmail());

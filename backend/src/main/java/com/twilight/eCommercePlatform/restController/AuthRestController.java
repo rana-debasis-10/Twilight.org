@@ -1,11 +1,12 @@
 package com.twilight.eCommercePlatform.restController;
 
-import com.twilight.eCommercePlatform.dto.auth.LoginRequestDTO;
+import com.twilight.eCommercePlatform.dto.auth.LoginRequest;
+import com.twilight.eCommercePlatform.dto.entity.RestaurantDTO;
 import com.twilight.eCommercePlatform.dto.entity.UserDTO;
-import com.twilight.eCommercePlatform.dto.auth.PasswordUpdateDTO;
-import com.twilight.eCommercePlatform.entities.User;
+import com.twilight.eCommercePlatform.dto.auth.PasswordUpdateRequest;
 import com.twilight.eCommercePlatform.security.UserDetailsImpl;
 import com.twilight.eCommercePlatform.services.JwtService;
+import com.twilight.eCommercePlatform.services.RestaurantService;
 import com.twilight.eCommercePlatform.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,11 +28,14 @@ public class AuthRestController {
     private JwtService jwtService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private RestaurantService restaurantService;
 
 
     /// Register
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO){
+    @PostMapping("/user/register")
+    @Validated
+    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO){
         try {
             UserDetailsImpl user= userService.saveAsUser(userDTO);
             String token = jwtService.generateToken(user);
@@ -41,11 +47,11 @@ public class AuthRestController {
 
     }
 
-
     /// Login
-    @PostMapping("/login")
-    public ResponseEntity<?>login(@RequestBody LoginRequestDTO loginRequestDTO){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.getEmail(), loginRequestDTO.getPassword()));
+    @PostMapping("/user/login")
+    @Validated
+    public ResponseEntity<?>login(@RequestBody LoginRequest loginRequest){
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         if (authentication.isAuthenticated()) {
             return ResponseEntity.ok(jwtService.generateToken((UserDetailsImpl)authentication.getPrincipal()));
         } else {
@@ -53,13 +59,19 @@ public class AuthRestController {
         }
     }
 
-    /// Update Password
-    @PostMapping("/updatePassword")
-    public ResponseEntity<?>updatePassword(@RequestBody @Valid PasswordUpdateDTO passwordUpdateDTO){
-        Authentication authentication =authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(passwordUpdateDTO.getEmail(),passwordUpdateDTO.getOldPassword()));
-        if(authentication.isAuthenticated()){
-            return new ResponseEntity<>(userService.updatePassword(passwordUpdateDTO.getNewPassword(),passwordUpdateDTO.getEmail()));
+    /// Register Restaurant with a User
+    @PostMapping("/restaurant/register")
+    @Validated
+    public ResponseEntity<?> restaurantRegister(@RequestBody UserDTO userDTO, @RequestBody RestaurantDTO restaurantDTO){
+
+        String token = (String)registerUser(userDTO).getBody();
+        try{
+            restaurantService.createRestaurant(restaurantDTO,userDTO.getEmail());
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
-       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 }

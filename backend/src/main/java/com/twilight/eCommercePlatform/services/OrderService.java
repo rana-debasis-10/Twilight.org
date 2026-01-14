@@ -2,8 +2,8 @@ package com.twilight.eCommercePlatform.services;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.twilight.eCommercePlatform.dto.order.OrderEntityResponseDTO;
-import com.twilight.eCommercePlatform.dto.order.OrderRequestDTO;
+import com.twilight.eCommercePlatform.dto.order.OrderEntityResponse;
+import com.twilight.eCommercePlatform.dto.order.OrderRequest;
 import com.twilight.eCommercePlatform.entities.*;
 import com.twilight.eCommercePlatform.enums.DeliveryStatus;
 import com.twilight.eCommercePlatform.enums.PaymentMethod;
@@ -44,7 +44,7 @@ public class OrderService {
     private Converter converter;
 
     /// Creating an order
-    public Map<String, Object> createOrder(OrderRequestDTO orderDetails) throws Exception {
+    public Map<String, Object> createOrder(OrderRequest orderDetails) throws Exception {
 
 
         List<OrderItem> orderItems = converter.ToOrderItems(orderDetails);
@@ -109,7 +109,6 @@ public class OrderService {
         orderEntity.setCreatedAt(Instant.now());
         orderEntity.setUserEmail(user.getEmail());
         orderEntity.setAddress(new Address(orderDetails.getAddress()));
-        System.out.println("Order Entity Build");
 
         /// Set mobile number
 
@@ -121,19 +120,14 @@ public class OrderService {
             throw new Exception("Mobile number is empty.");
         }
 
-        System.out.println("Mobile Number Checked and added ");
-        orderEntity.setUser(user);
-        orderItems.forEach(orderItem -> orderItem.setOrder(orderEntity));
         user.getOrders().add(orderEntity);
-
         userService.saveUser(user);
-        System.out.println("user Saved!");
 
         return response;
     }
 
     /// View Orders
-    public List<OrderEntityResponseDTO> getOrders(int pageNum){
+    public List<OrderEntityResponse> getOrders(int pageNum){
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         String email= userDetailsImpl.getEmail();
         return orderEntityRepo.findByUserEmail(email,PageRequest.of(pageNum,10)).getContent();

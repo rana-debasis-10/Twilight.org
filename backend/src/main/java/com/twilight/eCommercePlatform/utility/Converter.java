@@ -1,6 +1,6 @@
 package com.twilight.eCommercePlatform.utility;
 
-import com.twilight.eCommercePlatform.dto.order.OrderRequestDTO;
+import com.twilight.eCommercePlatform.dto.order.OrderRequest;
 import com.twilight.eCommercePlatform.entities.OrderItem;
 import com.twilight.eCommercePlatform.entities.Product;
 import com.twilight.eCommercePlatform.services.ProductService;
@@ -29,7 +29,7 @@ public class Converter {
     }
 
     ///  Convert Product to OrderItems
-    public List<OrderItem>ToOrderItems(OrderRequestDTO orderDetails) throws Exception {
+    public List<OrderItem>ToOrderItems(OrderRequest orderDetails) throws Exception {
         List<Product> products = new ArrayList<>();
         List<Integer> quantities = new ArrayList<>();
 

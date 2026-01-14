@@ -14,17 +14,6 @@ import java.util.List;
 public class RestaurantRestController{
     @Autowired
     RestaurantService restaurantService;
-    @PostMapping("/register")
-    boolean registerRestaurant(@RequestBody RestaurantDTO restaurantDTO){
-        try{
-            UserDetailsImpl userDetails=(UserDetailsImpl)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-            restaurantService.createRestaurant(restaurantDTO,userDetails);
-            return true;
-        }
-        catch (Exception e){
-            return false;
-        }
-    }
 
     @GetMapping("/find/{restName}/{pageNum}")
     List<RestaurantDTO> findRestaurant(@PathVariable String restName, @PathVariable int pageNum){

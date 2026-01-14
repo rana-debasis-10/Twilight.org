@@ -4,9 +4,8 @@ import com.twilight.eCommercePlatform.annotations.ValidEmail;
 import lombok.Data;
 
 @Data
-public class PasswordUpdateDTO {
+public class LoginRequest {
     @ValidEmail
-    private String email;
-    private String oldPassword;
-    private String newPassword;
+    String email;
+    String password;
 }

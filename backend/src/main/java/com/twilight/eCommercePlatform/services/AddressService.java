@@ -14,16 +14,11 @@ public class AddressService {
     @Autowired
     private AddressRepo addressRepo;
 
-
-
     public List<AddressDTO> getAllAddress(int pageNum) {
         return addressRepo.findAll(PageRequest.of(pageNum, 20))
                 .getContent()
                 .stream()
                 .map(AddressDTO::new)
                 .toList();
-    }
-    public AddressDTO getAddressById(Long addressId){
-        return new AddressDTO(addressRepo.findById(addressId).orElse(null));
     }
 }
