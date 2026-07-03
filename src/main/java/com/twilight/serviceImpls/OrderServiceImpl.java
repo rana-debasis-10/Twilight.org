@@ -2,19 +2,22 @@ package com.twilight.serviceImpls;
 
 
 import com.razorpay.RazorpayException;
+import com.twilight.dataTransferObjects.Address;
 import com.twilight.dataTransferObjects.FoodPrice;
+import com.twilight.dataTransferObjects.Point;
 import com.twilight.exceptions.*;
 import com.twilight.objects.Customer;
 import com.twilight.objects.Item;
 import com.twilight.objects.Order;
+import com.twilight.objects.OrderAddress;
 import com.twilight.repositories.CustomerRepository;
 import com.twilight.repositories.FoodRepository;
 import com.twilight.repositories.OrderRepository;
-import com.twilight.services.OrderService;
-import com.twilight.services.PaymentService;
+import com.twilight.services.*;
 import com.twilight.types.DeliveryStatus;
 import com.twilight.types.PaymentMethod;
 import com.twilight.types.PaymentStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,17 +25,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
     CustomerRepository customerRepository;
-
-    @Autowired
-    RedisTemplate<String, Object> redis;
 
     @Autowired
     OrderRepository orderRepository;
@@ -43,25 +46,48 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     PaymentService paymentService;
 
+    @Autowired
+    SearchService searchService;
+
+    @Autowired
+    LocationService locationService;
+
+    private DispatchService dispatchService;
+
 
 
     @Override
     @Transactional
-    public Map<String, Object > create(String mobNo, Order order) throws BadRequestException, RazorpayException {
-
+    public Map<String,Object> create(String mobNo, Order order)
+            throws BadRequestException, RazorpayException
+    {
         if(order.getItems().size()>=10)
-            throw new BadRequestException("Total number of unique items can not exceed 10", "");
-
+            throw new BadRequestException(
+                    "Total number of unique items can not exceed 10"
+                    , "");
         Customer customer = customerRepository
                 .findById(mobNo)
                 .orElseThrow(
                         () -> new UnAuthorizedException(
-                                "No account found for the user of Mobile Number :"+mobNo
+                                "No account found for the user of Mobile Number :"
+                                        + mobNo
                                 ,"User does not exist")
                 );
-
-
-        Map<Integer,Double> foods = validateAndGetFoodMap(order.getOutletId(),order.getItems());
+        OrderAddress orderAddress = order.getDeliveryAddress();
+        Point location =locationService.getLocation(
+                new Address(
+                        orderAddress.getState(),
+                        orderAddress.getCity(),
+                        orderAddress.getPinCode(),
+                        orderAddress.getStreet(),
+                        orderAddress.getLandMark()
+                )
+        );
+        Map<Integer,Double> foods = validateAndGetFoodMap(
+                order.getOutletId(),
+                order.getItems(),
+                location.latitude(),
+                location.latitude());
         double total = 0.00;
 
         for (Item item : order.getItems()) {
@@ -87,12 +113,14 @@ public class OrderServiceImpl implements OrderService {
 
         if(order.getPaymentMethod() == PaymentMethod.cash_on_delivery){
             response = new HashMap<>();
+            order = orderRepository.save(order);
+            dispatchService.dispatch("notify-outlet-cod",order.getId());
         }
         else{
             response =paymentService.createPayment(total, "IND", receipt);
             order.setRazorpayOrderId((String) response.get("id"));
+            orderRepository.save(order);
         }
-        orderRepository.save(order);
 
         return response;
     }
@@ -114,7 +142,8 @@ public class OrderServiceImpl implements OrderService {
                         .substring(0, 15);
     }
 
-    private Map<Integer, Double> validateAndGetFoodMap(Integer outletId ,List<Item> items) throws BadRequestException{
+    private Map<Integer, Double> validateAndGetFoodMap(Integer outletId ,List<Item> items, Double lat,Double lan ) throws BadRequestException{
+        searchService.isDeliverable(lat,lan,outletId);
         List<Integer> foodIds = items
                 .stream()
                 .map(Item::getFoodId)

@@ -22,7 +22,7 @@ public class SearchEndpoint {
     }
     @GetMapping("/food")
     public List<FoodR> getFoods(@RequestParam(name = "o")Integer outletId){
-        return searchService.getFoods(outletId);
+        return searchService.getMenuByOutlet(outletId);
     }
 
 }

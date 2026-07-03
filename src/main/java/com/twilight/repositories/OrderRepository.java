@@ -13,5 +13,5 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<@NonNull Order,@NonNull Integer> {
     List<Order> findByCustomerMobNo(String mobNo, Pageable pageable);
-
+    Order findByRazorpayOrderId(String razorpayOrderId);
 }

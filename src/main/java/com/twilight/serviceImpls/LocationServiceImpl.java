@@ -4,9 +4,15 @@ import com.twilight.dataTransferObjects.Address;
 import com.twilight.dataTransferObjects.Point;
 import com.twilight.exceptions.GeocodingError;
 import com.twilight.exceptions.SomethingWentWrongException;
-import com.twilight.services.GeoCodingService;
+import com.twilight.services.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResults;
+import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.core.GeoOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.domain.geo.Metrics;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,10 +23,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.List;
+
 @Service
-public class GeoCodingServiceImpl implements GeoCodingService {
+public class LocationServiceImpl implements LocationService {
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private RedisTemplate<String,String> redis;
+
 
     @Override
     public Point getLocation(Address address) throws GeocodingError
@@ -72,7 +83,7 @@ public class GeoCodingServiceImpl implements GeoCodingService {
                 .build(false)
                 .toUriString();
     }
-    <T> HttpEntity<T> createRequest(String headerName,
+    private <T> HttpEntity<T> createRequest(String headerName,
                                     String headerValue
     ){
         HttpHeaders headers = new HttpHeaders();
@@ -96,6 +107,51 @@ public class GeoCodingServiceImpl implements GeoCodingService {
                         .get("lon")
                         .asDouble();
         return new Point(lat,lon);
+    }
+
+    @Override
+    public void updateLocation(String driverMobNo, Point location) {
+        GeoOperations<String, String> geo =
+                redis.opsForGeo();
+        geo.add(
+                "driver:locations",
+                new org.springframework.data.geo.Point(location.longitude(),location.latitude()),
+                String.valueOf(driverMobNo)
+        );
+    }
+
+    /**
+     //* @param point
+     //*/
+    @Override
+    public List<String> findNearByDriver(Point point) {
+
+
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results =
+                redis.opsForGeo().radius(
+
+                        "driver:locations",
+
+                        new Circle(
+                                new org.springframework.data.geo.Point(point.longitude(), point.latitude()),
+                                new Distance(
+                                        5,
+                                        Metrics.KILOMETERS
+                                )
+
+                        )
+
+                );
+
+        return results.getContent()
+
+                .stream()
+
+                .map(r -> r.getContent().getName())
+
+                .toList();
+
+
     }
 
 }

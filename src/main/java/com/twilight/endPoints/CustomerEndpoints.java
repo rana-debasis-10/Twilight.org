@@ -1,6 +1,7 @@
 package com.twilight.endPoints;
 
 
+import com.razorpay.RazorpayException;
 import com.twilight.dataTransferObjects.CustomerR;
 import com.twilight.dataTransferObjects.OrderR;
 import com.twilight.dataTransferObjects.Payment;
@@ -12,13 +13,16 @@ import com.twilight.services.OrderService;
 import com.twilight.services.PaymentService;
 import com.twilight.utils.UserContext;
 import jakarta.transaction.Transactional;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/customer")
@@ -36,7 +40,7 @@ public class CustomerEndpoints {
     @Autowired
     UserContext user;
 
-    @GetMapping("/customer/login")
+    @GetMapping("/login")
     @Validated
     @Transactional
     CustomerR loadCustomer() {
@@ -54,7 +58,13 @@ public class CustomerEndpoints {
     @PostMapping("/order/verify")
     @Validated
     @Transactional
-    void verifyPayment(@RequestBody Payment payment){
+    public void verifyPayment(@RequestBody Payment payment){
+        System.out.println("PaymentId"+payment.razorpayPaymentId());
+        System.out.println("OrderId"+payment.razorpayOrderId());
+        System.out.println("SignatureId"+payment.razorpaySignature());
         paymentService.verifyPayment(payment);
     }
+
+
+
 }

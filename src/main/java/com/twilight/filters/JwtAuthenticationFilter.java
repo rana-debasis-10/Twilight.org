@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Object credential = claims.get("Credential", Object.class);
 
-            Role role = Role.valueOf(claims.get("Role", String.class));
+            Role role = claims.get("Role", Role.class);
 
 
             Collection<GrantedAuthority> authorities = new ArrayList<>();

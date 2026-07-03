@@ -13,10 +13,11 @@ import java.util.List;
 
 public interface MerchantService {
     void createOutlet(@MobileNumber @NotNull String mobNo, Point point);
+
     void createMerchant(@NotNull Merchant merchant,@NotNull Restaurant restaurant);
 
-
     OutletInvitation inviteManager(@MobileNumber @NotNull String merchantMobNo, @MobileNumber @NotNull String inviteeMobNo, Integer outletId);
+
     OutletInvitation inviteOtherManager(@MobileNumber @NotNull String merchantMobNo, String inviteeMobNo, @NotNull Integer outletId) throws BadRequestException;
 
     List<OutletDetailed> viewAllOutlets(@MobileNumber String merchantMobNo);

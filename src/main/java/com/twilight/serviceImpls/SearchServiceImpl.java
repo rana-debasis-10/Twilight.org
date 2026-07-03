@@ -38,7 +38,7 @@ public class SearchServiceImpl implements SearchService {
                                 ((Number) row[5]).doubleValue()
                         ))
                         .filter(outlet ->
-                                distanceKm(
+                                calculateDistanceInKilometers(
                                         lat,
                                         lon,
                                         outlet.latitude(),
@@ -49,11 +49,11 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<FoodR> getFoods(Integer outletId) {
+    public List<FoodR> getMenuByOutlet(Integer outletId) {
         return foodRepository.findMenuByOutletId(outletId);
     }
 
-    private static double distanceKm(
+    private static double calculateDistanceInKilometers(
             double lat1,
             double lon1,
             double lat2,
@@ -85,6 +85,6 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public boolean isDeliverable(Double lat, Double lon, Integer outletId){
         Point location = outletRepository.findLocationByIdAndStatus(outletId);
-        return distanceKm(lat,lon,location.latitude(),location.longitude()) <= 5.0;
+        return calculateDistanceInKilometers(lat,lon,location.latitude(),location.longitude()) <= 5.0;
     }
 }

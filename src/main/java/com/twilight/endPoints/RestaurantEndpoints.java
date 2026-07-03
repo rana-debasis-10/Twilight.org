@@ -4,13 +4,11 @@ import com.twilight.annotations.MobileNumber;
 import com.twilight.dataTransferObjects.*;
 
 import com.twilight.exceptions.UnAuthorizedException;
-import com.twilight.mappers.MerchantMapper;
 import com.twilight.mappers.RestaurantMapper;
 import com.twilight.objects.OutletInvitation;
 import com.twilight.services.*;
 import com.twilight.utils.UserContext;
 
-import com.twilight.validators.ImageValidator;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ public class RestaurantEndpoints {
     UserContext userContext;
 
     @Autowired
-    GeoCodingService geoCoding;
+    LocationService geoCoding;
 
     @Autowired
     RestaurantMapper restaurantMapper;

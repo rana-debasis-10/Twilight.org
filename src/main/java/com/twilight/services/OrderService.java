@@ -12,6 +12,4 @@ public interface OrderService {
 
     @Transactional
     public List<Order> get(String mobNo, int page);
-
-
 }

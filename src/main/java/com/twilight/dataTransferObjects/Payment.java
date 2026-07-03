@@ -1,5 +1,5 @@
 package com.twilight.dataTransferObjects;
 
 
-public record Payment(String orderId, String paymentId, String signature){}
+public record Payment(String razorpayOrderId, String razorpayPaymentId, String razorpaySignature){}
 

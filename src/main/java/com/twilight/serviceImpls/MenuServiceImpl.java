@@ -6,14 +6,12 @@ import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.*;
 import com.twilight.repositories.*;
+import com.twilight.services.DispatchService;
 import com.twilight.services.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,7 +29,7 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     FoodRepository foodRepository;
     @Autowired
-    EventService eventService;
+    DispatchService dispatchService;
 
 
     public Restaurant findRestaurantByMobNo(String mobNo) throws NotFoundException {
@@ -61,7 +59,7 @@ public class MenuServiceImpl implements MenuService {
         product.setRestaurant(restaurant);
         product = productRepository.save(product);
         MenuUpdateR request = new MenuUpdateR(product.getId(),restaurant.getId());
-        eventService.send("Menu-Update",request);
+        dispatchService.dispatch("update-menu",request);
     }
 
     @Override

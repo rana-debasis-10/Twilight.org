@@ -1,4 +1,4 @@
-package com.twilight.eHandlers;
+package com.twilight.Handlers;
 import com.twilight.exceptions.GeocodingError;
 import com.twilight.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.twilight.dataTransferObjects.*;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -39,34 +40,34 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handleBadRequestExceptions(BadRequestException ex){
         log.info("\n{}\n", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getError());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(ex.getError()));
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundExceptions(NotFoundException ex){
         log.info("\n{}\n", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getError());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ex.getError()));
     }
 
     @ExceptionHandler(UnAuthorizedException.class)
     public ResponseEntity<?> handleUnauthorizedExceptions(UnAuthorizedException ex){
         log.warn("\n{}\n", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getError());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(ex.getError()));
     }
 
     @ExceptionHandler(GeocodingError.class)
     public ResponseEntity<?> handleGeocodingExceptions(GeocodingError ex){
         log.info("\n{}\n", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getError());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ex.getError()));
     }
     @ExceptionHandler(SomethingWentWrongException.class)
     public ResponseEntity<?> handleServerExceptions(SomethingWentWrongException ex){
         log.error("\n{}\n", ex.getMessage());
-        return ResponseEntity.internalServerError().body(ex.getError());
+        return ResponseEntity.internalServerError().body(new Message(ex.getError()));
     }
     @ExceptionHandler(InvalidFileException.class)
-    public ResponseEntity<?> handleFileTypeExceptions(GeocodingError ex){
+    public ResponseEntity<?> handleFileTypeExceptions(GeocodingError ex){   
         log.info("\n{}\n", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(ex.getError());
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new Message(ex.getError()));
     }
 }

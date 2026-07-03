@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "4.0.2"
 	id("io.spring.dependency-management") version "1.1.7"
+    kotlin("jvm")
 }
 
 group = "com"
@@ -102,7 +103,8 @@ dependencies {
 	testImplementation(
 		"org.springframework.security:spring-security-test"
 	)
-
+	implementation ("org.springframework.boot:spring-boot-starter-websocket")
+    implementation(kotlin("stdlib-jdk8"))
 
 
 }

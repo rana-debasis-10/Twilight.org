@@ -3,11 +3,26 @@ clear
 docker compose down
 
 # shellcheck disable=SC2164
-./gradlew clean
-./gradlew build -x test
+
+./gradlew clean 
+
+echo "Gradle clean complete"
+
+cd ~/workspace/Twilight-Foodz
+
+./gradlew build -x test 
+
 docker buildx build -t twilight-backend .
 
-source .env
+echo "Docker image created"
 
-docker compose up -d
-docker compose logs -f backend
+source .env 
+
+echo "Environmental variables exported"
+
+docker compose up -d 
+
+
+
+
+

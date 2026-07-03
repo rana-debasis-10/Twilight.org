@@ -18,6 +18,11 @@ public class Driver {
     @MobileNumber
     @Column(name = "mob_no", length = 15)
     private String mobNo;
+    private String name;
     private String drivingLicense;
+    private String pan;
+    private String aadhaar;
+    private String bankAccount;
+    private String ifsc;
 
 }
