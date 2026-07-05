@@ -1,9 +1,9 @@
 package com.twilight.repositories;
 
+import com.twilight.dataTransferObjects.Location;
 import com.twilight.dataTransferObjects.OutletDetailed;
 import com.twilight.dataTransferObjects.OutletR;
 import com.twilight.objects.Outlet;
-import com.twilight.dataTransferObjects.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,7 +45,7 @@ public interface OutletRepository extends JpaRepository<Outlet,Integer> {
     );
 
     @Query("""
-                select new com.twilight.dataTransferObjects.Point(
+                select new com.twilight.dataTransferObjects.Location(
                 o.latitude,
                 o.longitude
                 )
@@ -54,7 +54,7 @@ public interface OutletRepository extends JpaRepository<Outlet,Integer> {
                 where o.id = :outletId
                 and o.outletStatus =  com.twilight.types.OutletStatus.open
                 """)
-    Point findLocationByIdAndStatus(
+    Location findLocationByIdAndStatus(
             @Param("outletId") Integer outletId
     );
 

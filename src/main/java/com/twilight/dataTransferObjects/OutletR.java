@@ -1,15 +1,16 @@
 package com.twilight.dataTransferObjects;
 
 import com.twilight.types.OutletStatus;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
 public record OutletR (
         @NotNull Integer outletId ,
-        @NotNull
+        @NotBlank
         String restaurantName,
-        @NotNull
+        @NotBlank
         String restaurantImage ,
         @NotNull
         OutletStatus outletStatus,

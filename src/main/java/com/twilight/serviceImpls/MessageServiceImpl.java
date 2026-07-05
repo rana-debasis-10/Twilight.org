@@ -34,6 +34,7 @@ public class MessageServiceImpl implements MessageService {
 
         String otp = generateOtp();
 
+
         try {
             redis.opsForValue().set(mobNo, otp);
         } catch (Exception e) {
@@ -43,37 +44,44 @@ public class MessageServiceImpl implements MessageService {
                     ,"Some Service is unavailable at this moment");
         }
 
+        /**
+        * Testing code
+        */
+        System.out.println("\n::::::::::::::::Generated OTP is ::::::::::::::::: "+ otp);
 
 
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.set("number", mobNo);
-        headers.set("otp", otp);
-        headers.set("key", apiKey);
-
-        HttpEntity<Void> request =
-                new HttpEntity<>(headers);
-        ResponseEntity<String> response;
-
-        try{
-           response =
-                    restTemplate.exchange(
-                            endpointUrl + "/send-sms",
-                            HttpMethod.POST,
-                            request,
-                            String.class
-                    );
-        } catch (RuntimeException e) {
-            throw new NotFoundException(
-                    e.getMessage()
-                    ,"This Service is currently under maintenance"
-            );
-        }
-        if(!response.getStatusCode().is2xxSuccessful())
-            throw new SomethingWentWrongException(
-                    "SMS Server failed to send message",
-                    "This Service is currently under maintenance"
-            );
+        /**
+         * Production Code...
+         */
+//        HttpHeaders headers = new HttpHeaders();
+//
+//        headers.set("number", mobNo);
+//        headers.set("otp", otp);
+//        headers.set("key", apiKey);
+//
+//        HttpEntity<Void> request =
+//                new HttpEntity<>(headers);
+//        ResponseEntity<String> response;
+//
+//        try{
+//           response =
+//                    restTemplate.exchange(
+//                            endpointUrl + "/send-sms",
+//                            HttpMethod.POST,
+//                            request,
+//                            String.class
+//                    );
+//        } catch (RuntimeException e) {
+//            throw new NotFoundException(
+//                    e.getMessage()
+//                    ,"This Service is currently under maintenance"
+//            );
+//        }
+//        if(!response.getStatusCode().is2xxSuccessful())
+//            throw new SomethingWentWrongException(
+//                    "SMS Server failed to send message",
+//                    "This Service is currently under maintenance"
+//            );
 
     }
 

@@ -1,11 +1,18 @@
 package com.twilight.dataTransferObjects;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank
+;
 public record DriverR(
-        @NotNull String name,
-        @NotNull String drivingLicense,
-        @NotNull String pan,
-        @NotNull String aadhaar,
-        @NotNull String bankAccount,
-        @NotNull String ifsc) {
+        @NotBlank
+         String name,
+        @NotBlank
+         String drivingLicense,
+        @NotBlank
+         String pan,
+        @NotBlank
+         String aadhaar,
+        @NotBlank
+         String bankAccount,
+        @NotBlank
+         String ifsc) {
 }

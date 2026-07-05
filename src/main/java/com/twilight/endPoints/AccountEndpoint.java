@@ -4,7 +4,6 @@ import com.twilight.dataTransferObjects.DriverR;
 import com.twilight.dataTransferObjects.Jwt;
 import com.twilight.dataTransferObjects.MerchantR;
 import com.twilight.dataTransferObjects.RestaurantR;
-import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.mappers.MerchantMapper;
 import com.twilight.mappers.RestaurantMapper;
 import com.twilight.objects.*;
@@ -14,7 +13,10 @@ import com.twilight.utils.UserContext;
 import com.twilight.validators.ImageValidator;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,47 +27,40 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/account")
+@Validated
+@RequiredArgsConstructor
 public class AccountEndpoint {
-    @Autowired
-    CustomerService customerService;
+    private  CustomerService customerService;
 
-    @Autowired
     private UserContext user;
 
-    @Autowired
-    JwtService jwtService;
+    private  JwtService jwtService;
 
-    @Autowired
-    ManagerService managerService;
+    private ManagerService managerService;
 
-    @Autowired
-    RestaurantMapper restaurantMapper;
-    @Autowired
-    MerchantMapper merchantMapper;
+    private  RestaurantMapper restaurantMapper;
 
-    @Autowired
-    ImageValidator imageValidator;
+    private  MerchantMapper merchantMapper;
 
-    @Autowired
-    StorageService storageService;
+    private  ImageValidator imageValidator;
 
-    @Autowired
-    MerchantService merchantService;
+    private  StorageService storageService;
 
-    @Autowired DriverService driverService;
+    private  MerchantService merchantService;
+
+    private  DriverService driverService;
+
 
 
     @GetMapping("/customer/register")
-    @Validated
     @Transactional
-    public Jwt createCustomer(@RequestParam(name = "n",required = true)String name){
+    public Jwt createCustomer(@RequestParam(name = "n")@NotBlank String name){
         String mobNo = user.getMobNo();
         customerService.create(mobNo,name);
         return new Jwt(jwtService.generateToken(mobNo, Role.customer,name));
     }
 
     @GetMapping("/customer/login")
-    @Validated
     @Transactional
     Jwt loadCustomer() {
         String mobNo = user.getMobNo();
@@ -73,13 +68,12 @@ public class AccountEndpoint {
         return new Jwt(jwtService.generateToken(mobNo,Role.customer,customer.getName()));
     }
 
-    @Validated
     @PostMapping(value = "/merchant/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
     public Jwt createMerchantAndRestaurant(
-            @RequestPart("merchant") MerchantR merchantR,
-            @RequestPart("restaurant") RestaurantR restaurantR,
-            @RequestPart("image") MultipartFile image
+            @RequestPart("merchant")@Valid MerchantR merchantR,
+            @RequestPart("restaurant")@Valid RestaurantR restaurantR,
+            @RequestPart("image")MultipartFile image
     ) throws IOException {
 
         imageValidator.validateImage(image);
@@ -91,24 +85,25 @@ public class AccountEndpoint {
 
         merchant.setMobNo(mobNo);
 
-        restaurant.setImage(storageService.upload(image, "restaurant"));
+        String key = storageService.generateKey("restaurants", image.getOriginalFilename());
 
         merchantService.createMerchant(merchant, restaurant);
+        storageService.upload(image,key);
 
         return new Jwt(jwtService.generateToken(mobNo, Role.merchant));
     }
 
-    @Validated
+
     @PostMapping(value = "/merchant/login")
     @Transactional
     public Jwt loadMerchant(){
         String mobNo = user.getMobNo();
-        Merchant merchant = merchantService.getMerchant(mobNo);
+        merchantService.getMerchant(mobNo);
         return new Jwt(jwtService.generateToken(mobNo,Role.merchant));
     }
 
     @GetMapping("/manager/invitations")
-    @Validated
+
     @Transactional
     public List<OutletInvitation> viewInvitation(){
         String mobNo= user.getMobNo();
@@ -117,9 +112,8 @@ public class AccountEndpoint {
 
 
     @GetMapping("/manager/invitation/accept")
-    @Validated
     @Transactional
-    public Jwt acceptInvitation(@RequestParam("i")Integer invitationId) {
+    public Jwt acceptInvitation(@RequestParam("i" )Integer invitationId) {
         String mobNo = user.getMobNo();
         Integer outletId = managerService.acceptInvitation(mobNo, invitationId);
         return new Jwt(jwtService.generateToken(mobNo, Role.manager, outletId));
@@ -129,12 +123,12 @@ public class AccountEndpoint {
 
     @GetMapping("/manager/login")
     @Transactional
-    @Validated
     public Jwt managerLogin(){
         String mobNo = user.getMobNo();
         Integer outletId = managerService.findLinkedOutlet(mobNo);
         return new Jwt(jwtService.generateToken(mobNo, Role.manager, outletId));
     }
+    
     @GetMapping("/driver/login")
     @Transactional
     public Jwt driverLogin(){
@@ -145,7 +139,7 @@ public class AccountEndpoint {
     }
     @GetMapping("/driver/register")
     @Transactional
-    public Jwt registerDriver(@RequestBody DriverR driverR){
+    public Jwt registerDriver(@RequestBody @Valid DriverR driverR){
         String mobNo = user.getMobNo();
         Driver driver = new Driver(mobNo,driverR.name(),driverR.drivingLicense(), driverR.pan(),driverR.aadhaar(),driverR.bankAccount(),driverR.ifsc());
         driverService.createDriver(driver);

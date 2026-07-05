@@ -25,4 +25,10 @@ public interface DispatchService {
             groupId = "outlet-notifier-cod"
     )
     void outletNotifier(Integer orderId);
+
+    @KafkaListener(
+            topics = "notify-outlet-cod",
+            groupId = "outlet-notifier-cod"
+    )
+    void outletNotifier(String razorpayOrderId);
 }

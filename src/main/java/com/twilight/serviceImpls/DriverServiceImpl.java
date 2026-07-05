@@ -6,7 +6,9 @@ import com.twilight.objects.Driver;
 import com.twilight.repositories.DriverRepository;
 import com.twilight.services.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DriverServiceImpl implements DriverService {
 
 

@@ -1,10 +1,6 @@
 package com.twilight.dataTransferObjects;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
 
-@AllArgsConstructor
-@Getter
-public class Message {
-    private final String message;
+public record Message(@NotBlank String message) {
 }

@@ -2,7 +2,7 @@ package com.twilight.serviceImpls;
 
 import com.twilight.dataTransferObjects.MenuUpdateR;
 import com.twilight.dataTransferObjects.OrderSummary;
-import com.twilight.dataTransferObjects.Point;
+import com.twilight.dataTransferObjects.Location;
 import com.twilight.dataTransferObjects.WebSocketMessage;
 import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.managers.SessionManager;
@@ -44,9 +44,6 @@ public class DispatchServiceImpl implements DispatchService {
 
     @Autowired
     SessionManager sessionManager;
-
-    @Autowired
-    ManagerSessionManager managerSessionManager;
 
     @Autowired
     LocationService locationService;
@@ -108,7 +105,7 @@ public class DispatchServiceImpl implements DispatchService {
         Outlet outlet = optionalObject.get();
         List<String> drivers = locationService
                 .findNearByDriver(
-                        new Point(outlet.getLatitude(),outlet.getLongitude())
+                        new Location(outlet.getLatitude(),outlet.getLongitude())
                 );
         OrderSummary orderSummary  =
                 new OrderSummary(
@@ -139,12 +136,46 @@ public class DispatchServiceImpl implements DispatchService {
             log.warn("Order not found to notify outlet");
             return;
         }
-
-
         try {
-            managerSessionManager.send(order.getOutletId(),new WebSocketMessage("new-order",order));
+            sessionManager.send(
+                    order.getOutletId().toString(),
+                    new WebSocketMessage(
+                            "new-order",
+                            order.getItems()
+                    )
+            );
         } catch (IOException e) {
-            log.warn("Failed to notify Outlet");
+            log.warn(
+                    "Failed to notify Outlet for cash on delivery due to {}"
+                    ,e.getLocalizedMessage()
+            );
+        }
+
+    }
+    @KafkaListener(
+            topics = "notify-outlet",
+            groupId = "outlet-notifier"
+    )
+    @Override
+    public void outletNotifier(String razorpayOrderId){
+        Order order = orderRepository.findByRazorpayOrderId(razorpayOrderId);
+        if(order == null){
+            log.warn("Order not found to notify outlet in online payment");
+            return;
+        }
+        try {
+            sessionManager.send(
+                    order.getOutletId().toString(),
+                    new WebSocketMessage(
+                            "new-order",
+                            order.getItems()
+                    )
+            );
+        } catch (IOException e) {
+            log.warn(
+                    "Failed to notify Outlet for online payment due to {}",
+                    e.getLocalizedMessage()
+            );
         }
 
     }

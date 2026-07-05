@@ -4,7 +4,6 @@ import com.twilight.annotations.MobileNumber;
 import com.twilight.dataTransferObjects.FoodR;
 import com.twilight.dataTransferObjects.OutletR;
 import com.twilight.exceptions.NotFoundException;
-import com.twilight.objects.Manager;
 import com.twilight.objects.OutletInvitation;
 import org.apache.coyote.BadRequestException;
 import software.amazon.awssdk.annotations.NotNull;

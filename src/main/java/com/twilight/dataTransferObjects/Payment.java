@@ -1,5 +1,7 @@
 package com.twilight.dataTransferObjects;
 
 
-public record Payment(String razorpayOrderId, String razorpayPaymentId, String razorpaySignature){}
+import jakarta.validation.constraints.NotBlank;
+
+public record Payment(@NotBlank String razorpayOrderId,@NotBlank String razorpayPaymentId,@NotBlank String razorpaySignature){}
 

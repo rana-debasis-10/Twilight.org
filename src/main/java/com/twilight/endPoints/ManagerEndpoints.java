@@ -5,12 +5,12 @@ import com.twilight.dataTransferObjects.OutletR;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.services.JwtService;
 import com.twilight.services.ManagerService;
-import com.twilight.types.Role;
 import com.twilight.utils.UserContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,20 +24,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/manager")
+@Validated
+@RequiredArgsConstructor
 public class ManagerEndpoints {
-    @Autowired
-    UserContext user;
+    private
+       UserContext user;
 
-    @Autowired
-    ManagerService managerService;
+    private
+       ManagerService managerService;
 
-    @Autowired
-    JwtService jwtService;
+    private
+       JwtService jwtService;
 
 
 
     @GetMapping("/update/food/price")
-    @Validated
     @Transactional
     void updateFoodPrice(@RequestParam Integer foodId, Double price) {
         Integer outletId = (Integer)user.getCredential();
@@ -49,9 +50,8 @@ public class ManagerEndpoints {
     };
 
     @GetMapping("/update/food/available")
-    @Validated
     @Transactional
-    void makeFoodAvailable(@RequestParam Integer foodId) throws ChangeSetPersister.NotFoundException{
+    void makeFoodAvailable(@RequestParam Integer foodId){
         Integer outletId = (Integer) user.getCredential();
         if(outletId== null)
             throw new UnAuthorizedException(
@@ -61,7 +61,8 @@ public class ManagerEndpoints {
     };
 
     @GetMapping("/update/food/unavailable")
-    void makeFoodUnavailable(@RequestParam(required = true) Integer foodId) throws ChangeSetPersister.NotFoundException{
+    @Transactional
+    void makeFoodUnavailable(@RequestParam (value = "f")Integer foodId){
         Integer outletId = (Integer)user.getCredential();
         if(outletId== null)
             throw new UnAuthorizedException(
@@ -71,7 +72,8 @@ public class ManagerEndpoints {
     };
 
     @GetMapping("/update/outlet/open")
-    void openOutlet()throws ChangeSetPersister.NotFoundException{
+    @Transactional
+    void openOutlet(){
         Integer outletId = (Integer) user.getCredential();
         if(outletId== null)
             throw new UnAuthorizedException(
@@ -81,7 +83,8 @@ public class ManagerEndpoints {
     };
 
     @GetMapping("/update/outlet/close")
-    void closeOutlet()throws ChangeSetPersister.NotFoundException{
+    @Transactional
+    void closeOutlet(){
         Integer outletId = (Integer) user.getCredential();
         if(outletId== null)
             throw new UnAuthorizedException(
@@ -89,7 +92,9 @@ public class ManagerEndpoints {
                     ,"No Linked Outlet");
         managerService.closeOutlet(outletId);
     };
+
     @GetMapping("/view/outlet")
+    @Transactional
     OutletR viewOutlet() throws BadRequestException {
         Integer outletId = (Integer) user.getCredential();
         if(outletId==null)
@@ -99,6 +104,7 @@ public class ManagerEndpoints {
         return managerService.viewOutlet(outletId);
     }
     @GetMapping
+    @Transactional
     List<FoodR> viewAllFoods(){
         Integer outletId = (Integer) user.getCredential();
         if(outletId==null)

@@ -32,9 +32,7 @@ public class StorageServiceImpl implements StorageService {
     @Value("${storage.client.endpoint}")
     private String endpoint;
 
-    public String upload(MultipartFile file, String folder) throws IOException {
-
-        String key = folder + "/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
+    public void upload(MultipartFile file,String key) throws IOException {
 
         try {
             s3Client.putObject(
@@ -51,7 +49,6 @@ public class StorageServiceImpl implements StorageService {
                     "Unable to upload image"
             );
         }
-        return key;
     }
 
     public Resource download(String key) {

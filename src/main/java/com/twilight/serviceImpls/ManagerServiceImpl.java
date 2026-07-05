@@ -14,6 +14,7 @@ import com.twilight.repositories.ManagerRepository;
 import com.twilight.repositories.OutletInvitationRepository;
 import com.twilight.repositories.OutletRepository;
 import com.twilight.services.ManagerService;
+import com.twilight.types.InvitationStatus;
 import com.twilight.types.OutletStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,8 +58,21 @@ public class ManagerServiceImpl implements ManagerService {
                                 + mobNo
                         ,"Invitation does not exist "));
         if(!invitation.getInviteeMobileNo().equals(mobNo))
-            throw new UnAuthorizedException("User trying to get invitation access","Invitation does not belong to you");
+            throw new UnAuthorizedException("User trying to get invitation access",
+                    "Invitation does not belong to you");
+        List<OutletInvitation> invitations = outletInvitationRepository.findByInviteeMobileNo(mobNo);
+        for(OutletInvitation invitation1 :invitations){
+            invitation1.setStatus(InvitationStatus.rejected);
+        }
         Integer outletId = invitation.getOutletId();
+        Outlet outlet = outletRepository.
+                findById(outletId).
+                orElseThrow(
+                        ()-> new UnAuthorizedException(
+                                "Outlet does not exist",
+                                "Outlet does not exist"));
+        outlet.setManagerMobNo(mobNo);
+        outletRepository.save(outlet);
         Manager manager = new Manager(mobNo,outletId);
         managerRepository.save(manager);
 

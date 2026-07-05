@@ -1,7 +1,7 @@
 package com.twilight.serviceImpls;
 
 import com.twilight.dataTransferObjects.Address;
-import com.twilight.dataTransferObjects.Point;
+import com.twilight.dataTransferObjects.Location;
 import com.twilight.exceptions.GeocodingError;
 import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.services.LocationService;
@@ -34,7 +34,7 @@ public class LocationServiceImpl implements LocationService {
 
 
     @Override
-    public Point getLocation(Address address) throws GeocodingError
+    public Location getLocation(Address address) throws GeocodingError
     {
         String response = null;
         try {
@@ -91,7 +91,7 @@ public class LocationServiceImpl implements LocationService {
         return new HttpEntity<T>(headers);
     }
 
-    private Point formatForLatAndLon(String response)
+    private Location formatForLatAndLon(String response)
     {
         JsonNode root = new ObjectMapper().readTree(response);
 
@@ -106,11 +106,11 @@ public class LocationServiceImpl implements LocationService {
                 root.get(0)
                         .get("lon")
                         .asDouble();
-        return new Point(lat,lon);
+        return new Location(lat,lon);
     }
 
     @Override
-    public void updateLocation(String driverMobNo, Point location) {
+    public void updateLocation(String driverMobNo, Location location) {
         GeoOperations<String, String> geo =
                 redis.opsForGeo();
         geo.add(
@@ -121,10 +121,10 @@ public class LocationServiceImpl implements LocationService {
     }
 
     /**
-     //* @param point
+     //* @param location
      //*/
     @Override
-    public List<String> findNearByDriver(Point point) {
+    public List<String> findNearByDriver(Location location) {
 
 
         GeoResults<RedisGeoCommands.GeoLocation<String>> results =
@@ -133,7 +133,7 @@ public class LocationServiceImpl implements LocationService {
                         "driver:locations",
 
                         new Circle(
-                                new org.springframework.data.geo.Point(point.longitude(), point.latitude()),
+                                new org.springframework.data.geo.Point(location.longitude(), location.latitude()),
                                 new Distance(
                                         5,
                                         Metrics.KILOMETERS

@@ -1,8 +1,8 @@
 package com.twilight.serviceImpls;
 
 import com.twilight.dataTransferObjects.FoodR;
+import com.twilight.dataTransferObjects.Location;
 import com.twilight.dataTransferObjects.OutletR;
-import com.twilight.dataTransferObjects.Point;
 import com.twilight.repositories.FoodRepository;
 import com.twilight.repositories.OutletRepository;
 import com.twilight.services.SearchService;
@@ -84,7 +84,7 @@ public class SearchServiceImpl implements SearchService {
     }
     @Override
     public boolean isDeliverable(Double lat, Double lon, Integer outletId){
-        Point location = outletRepository.findLocationByIdAndStatus(outletId);
+        Location location = outletRepository.findLocationByIdAndStatus(outletId);
         return calculateDistanceInKilometers(lat,lon,location.latitude(),location.longitude()) <= 5.0;
     }
 }

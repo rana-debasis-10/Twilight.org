@@ -1,20 +1,21 @@
 package com.twilight.serviceImpls;
 
 import com.twilight.annotations.MobileNumber;
+import com.twilight.dataTransferObjects.MenuUpdateR;
 import com.twilight.dataTransferObjects.OutletDetailed;
-import com.twilight.dataTransferObjects.Point;
+import com.twilight.dataTransferObjects.Location;
 import com.twilight.exceptions.BadRequestException;
 import com.twilight.exceptions.NotFoundException;
+import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.*;
-import com.twilight.repositories.MerchantRepository;
-import com.twilight.repositories.OutletInvitationRepository;
-import com.twilight.repositories.OutletRepository;
-import com.twilight.repositories.RestaurantRepository;
+import com.twilight.repositories.*;
+import com.twilight.services.DispatchService;
 import com.twilight.services.MerchantService;
+import com.twilight.types.InvitationStatus;
 import com.twilight.types.OutletStatus;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,20 +31,16 @@ public class MerchantServiceImpl implements MerchantService {
     OutletInvitationRepository invitationRepository;
     @Autowired
     OutletRepository outletRepository;
+    @Autowired
+    KafkaTemplate<String,Object> kafkaTemplate;
 
-    @Override
-    @Transactional
-    public void createOutlet(String mobNo, Point point) {
-        Restaurant restaurant = findRestaurantByMobNo(mobNo);
-        Outlet outlet = new Outlet();
-        outlet.setLatitude(point.latitude());
-        outlet.setLongitude(point.longitude());
-        outlet.setOutletStatus(OutletStatus.closed);
-        outlet.setMerchantMobNo(mobNo);
-        outlet.setRestaurant(restaurant);
+    @Autowired
+    ProductRepository productRepository;
 
-        outletRepository.save(outlet);
-    }
+    @Autowired
+    DispatchService dispatchService;
+
+
 
     @Override
     public void createMerchant(Merchant merchant, Restaurant restaurant) {
@@ -60,7 +57,20 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public OutletInvitation inviteManager(String inviterMobNo, String inviteeMobNo, Integer outletId) {
+    public void createOutlet(String mobNo, Location location) {
+        Restaurant restaurant = findRestaurantByMobNo(mobNo);
+        Outlet outlet = new Outlet();
+        outlet.setLatitude(location.latitude());
+        outlet.setLongitude(location.longitude());
+        outlet.setOutletStatus(OutletStatus.closed);
+        outlet.setMerchantMobNo(mobNo);
+        outlet.setRestaurant(restaurant);
+
+        outletRepository.save(outlet);
+    }
+
+    @Override
+    public OutletInvitation invite(String inviterMobNo, String inviteeMobNo, Integer outletId) {
         Outlet outlet = outletRepository.findById(outletId)
                             .orElseThrow(
                                     ()-> new NotFoundException(
@@ -75,12 +85,13 @@ public class MerchantServiceImpl implements MerchantService {
         OutletInvitation invitation = new OutletInvitation();
         invitation.setInviterMobileNo(inviterMobNo);
         invitation.setInviteeMobileNo(inviteeMobNo);
+        invitation.setStatus(InvitationStatus.pending);
         invitation.setOutletId(outletId);
         return invitationRepository.save(invitation);
     }
 
     @Override
-    public OutletInvitation inviteOtherManager(String merchantMobNo, String inviteeMobNo, Integer outletId) throws BadRequestException {
+    public OutletInvitation inviteSomeoneElse(String merchantMobNo, String inviteeMobNo, Integer outletId) throws BadRequestException {
         OutletInvitation invitation = invitationRepository.findByOutletId(outletId)
                 .orElseThrow(
                     ()-> new BadRequestException(
@@ -95,9 +106,47 @@ public class MerchantServiceImpl implements MerchantService {
     };
 
     @Override
-    public Restaurant findRestaurantByMobNo(String mobNo){
-        return restaurantRepository.findByMerchantMobNo(mobNo).orElse(null);
+    public List<OutletInvitation> viewAllInvitation(@MobileNumber String merchantMobNo){
+        return invitationRepository.findAllByInviterMobileNo(merchantMobNo);
     };
+
+    @Override
+    public Restaurant findRestaurantByMobNo(String mobNo) throws NotFoundException {
+        return restaurantRepository
+                .findByMerchantMobNo(mobNo)
+                .orElseThrow(
+                        ()->new NotFoundException(
+                                "User is trying to find restaurant",
+                                "Not restaurant linked to your mobile number"
+                        )
+                );
+    }
+
+    @Override
+    public void addAllToMenu(String mobNo, List<Product> products) throws NotFoundException {
+        Restaurant restaurant = findRestaurantByMobNo(mobNo);
+        restaurant.setMenuAdded(true);
+        products.forEach(product -> {
+            product.setRestaurant(restaurant);
+        });
+        restaurant.setProducts(products);
+        restaurantRepository.save(restaurant);
+    }
+    @Override
+    public void addToMenu(String mobNo, Product product) throws NotFoundException , SomethingWentWrongException {
+        Restaurant restaurant = findRestaurantByMobNo(mobNo);
+        product.setRestaurant(restaurant);
+        product = productRepository.save(product);
+        MenuUpdateR request = new MenuUpdateR(product.getId(),restaurant.getId());
+        dispatchService.dispatch("update-menu",request);
+    }
+
+    @Override
+    public void checkForMenuAdded(String mobNo) throws UnAuthorizedException {
+        Restaurant restaurant = findRestaurantByMobNo(mobNo);
+        if(restaurant.isMenuAdded())
+            throw new UnAuthorizedException("User is trying to add menu multiple times","Menu can only be added once");
+    }
 
 
 }

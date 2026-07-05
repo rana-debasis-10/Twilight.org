@@ -4,7 +4,7 @@ package com.twilight.serviceImpls;
 import com.razorpay.RazorpayException;
 import com.twilight.dataTransferObjects.Address;
 import com.twilight.dataTransferObjects.FoodPrice;
-import com.twilight.dataTransferObjects.Point;
+import com.twilight.dataTransferObjects.Location;
 import com.twilight.exceptions.*;
 import com.twilight.objects.Customer;
 import com.twilight.objects.Item;
@@ -20,12 +20,10 @@ import com.twilight.types.PaymentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
                                 ,"User does not exist")
                 );
         OrderAddress orderAddress = order.getDeliveryAddress();
-        Point location =locationService.getLocation(
+        Location location =locationService.getLocation(
                 new Address(
                         orderAddress.getState(),
                         orderAddress.getCity(),

@@ -1,6 +1,7 @@
 package com.twilight.objects;
 
 import com.twilight.annotations.MobileNumber;
+import com.twilight.types.InvitationStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -23,5 +24,8 @@ public class OutletInvitation {
     @NotNull
     @Column(unique = true)
     private Integer outletId;
+
+    @Enumerated(EnumType.STRING)
+    private InvitationStatus status;
 
 }
