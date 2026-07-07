@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -28,7 +26,6 @@ public class JwtServiceImpl implements JwtService {
     }
     @Override
     public String generateToken(String mobNo, @NonNull Role role) {
-        Map<String, Object> claims = new HashMap<>();
 
         return Jwts.builder()
                 .subject(mobNo)
@@ -59,7 +56,18 @@ public class JwtServiceImpl implements JwtService {
                 .claim("Role",role.toString())
                 .claim("Credential",credential)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date((long) (System.currentTimeMillis() + lifespan)))
+                .expiration(new Date((System.currentTimeMillis() + lifespan)))
+                .signWith(getKey())
+                .compact();
+    }
+
+    @Override
+    public String generateToken(String mobNo, @NonNull Role role, Long lifespan) {
+        return Jwts.builder()
+                .subject(mobNo)
+                .claim("Role",role.toString())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date((System.currentTimeMillis() + lifespan)))
                 .signWith(getKey())
                 .compact();
     }

@@ -29,13 +29,14 @@ public class AuthEndpoints {
         messageService.sendOtp(mobNo);
     };
 
-    @PostMapping ("/verify")
+    @GetMapping ("/verify")
     @Transactional
     Jwt verify(
-            @RequestParam(name = "m", required = true) @MobileNumber @NotBlank String mobNo,
-            @RequestParam(name = "o" ,required = true) Integer otp) throws UnAuthorizedException {
+            @RequestParam(name = "m") @MobileNumber @NotBlank String mobNo,
+            @RequestParam(name = "o") Integer otp) throws UnAuthorizedException {
+        Long lifespan = (long)600000;
         if(messageService.verifyOtp(mobNo, otp)){
-                String token = jwtService.generateToken(mobNo, Role.undefined);
+                String token = jwtService.generateToken(mobNo, Role.verified, lifespan);
                 return new Jwt(token);
         }
         else

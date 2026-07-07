@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/restaurant")
+@RequestMapping("/merchant")
 @Validated
 @RequiredArgsConstructor
 public class RestaurantEndpoints {
@@ -54,7 +54,6 @@ public class RestaurantEndpoints {
 
     @PostMapping("/create/outlet")
     @Transactional
-
     public void create(@RequestBody Address address) throws UnAuthorizedException{
         String mobNo = userContext.getMobNo();
 
@@ -64,7 +63,6 @@ public class RestaurantEndpoints {
 
     @GetMapping("/view")
     @Transactional
-
     public RestaurantR showRestaurant(){
         String merchantMobNo = userContext.getMobNo();
         return restaurantMapper.toDto(merchantService.findRestaurantByMobNo(merchantMobNo));
@@ -72,7 +70,6 @@ public class RestaurantEndpoints {
 
     @PostMapping("/outlet/invite")
     @Transactional
-
     public OutletInvitation inviteManager(@MobileNumber @RequestParam("m") String inviteeMobNo, @RequestParam("o") Integer outletId){
         String merchantMobNo = userContext.getMobNo();
         return merchantService.invite(merchantMobNo,inviteeMobNo,outletId);
@@ -95,6 +92,8 @@ public class RestaurantEndpoints {
         String merchantMobNo = userContext.getMobNo();
         return merchantService.inviteSomeoneElse(merchantMobNo,inviteeMobNo,outletId);
     }
+
+
     @GetMapping("/outlets")
     @Transactional
     public List<OutletDetailed> viewAllOutlets(){
@@ -163,7 +162,7 @@ public class RestaurantEndpoints {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     @Transactional
-    public void addProduct(@RequestPart("products")@Valid @NotNull ProductR productR,
+    public void addProduct(@RequestPart("product")@Valid @NotNull ProductR productR,
                            @RequestPart("image") @Valid @NotNull MultipartFile image) throws IOException {
         String mobNo = userContext.getMobNo();
 

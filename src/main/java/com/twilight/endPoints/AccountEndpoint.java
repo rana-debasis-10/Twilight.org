@@ -15,7 +15,7 @@ import com.twilight.validators.ImageValidator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/account")
 @Validated
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AccountEndpoint {
     private  CustomerService customerService;
 
@@ -49,6 +49,7 @@ public class AccountEndpoint {
     private  MerchantService merchantService;
 
     private  DriverService driverService;
+
 
 
 
@@ -102,6 +103,7 @@ public class AccountEndpoint {
         return new Jwt(jwtService.generateToken(mobNo,Role.merchant));
     }
 
+
     @GetMapping("/manager/invitations")
     @Transactional
     public List<OutletInvitation> viewInvitation(){
@@ -127,6 +129,7 @@ public class AccountEndpoint {
         Integer outletId = managerService.findLinkedOutlet(mobNo);
         return new Jwt(jwtService.generateToken(mobNo, Role.manager, outletId));
     }
+
     
     @GetMapping("/driver/login")
     @Transactional
@@ -136,6 +139,8 @@ public class AccountEndpoint {
         String jwt = jwtService.generateToken(mobNo,Role.driver);
         return new Jwt(jwt);
     }
+
+
     @GetMapping("/driver/register")
     @Transactional
     public Jwt registerDriver(@RequestBody @Valid DriverR driverR){

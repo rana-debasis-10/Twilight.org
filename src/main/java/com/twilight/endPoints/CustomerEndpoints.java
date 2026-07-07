@@ -38,7 +38,7 @@ public class CustomerEndpoints {
 
     private UserContext user;
 
-    @GetMapping("/login")
+    @GetMapping("/load")
     @Transactional
     CustomerR loadCustomer() {
         String mobNo = user.getMobNo();
@@ -51,12 +51,10 @@ public class CustomerEndpoints {
         return orderService.create(user.getMobNo(),orderMapper.toOrder(orderDetails));
     }
 
-    @PostMapping("/order/verify")
+    @PostMapping("/payment/verify")
     @Transactional
     public void verifyPayment(@RequestBody @Valid Payment payment){
         paymentService.verifyPayment(payment);
     }
-
-
 
 }

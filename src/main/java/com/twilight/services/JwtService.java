@@ -8,15 +8,17 @@ import org.jspecify.annotations.NonNull;
 
 public interface JwtService {
 
-    public String generateToken(@MobileNumber @NotNull String mobNo, @NonNull Role role) ;
+    String generateToken(@MobileNumber @NotNull String mobNo, @NonNull Role role) ;
 
-    public String generateToken(@MobileNumber @NotNull String mobNo , @NonNull Role role , Object credential);
+    String generateToken(@MobileNumber @NotNull String mobNo , @NonNull Role role , Object credential);
 
-    public String generateToken(@MobileNumber @NotNull String mobNo , @NonNull Role role , Object credential, Long lifespan);
+    String generateToken(@MobileNumber @NotNull String mobNo , @NonNull Role role , Object credential, Long lifespan);
 
-    public boolean isTokenValid(@NonNull @NotNull String token) ;
+    String generateToken(String mobNo, @NonNull Role role, Long lifespan);
 
-    public Claims extractClaims(@NonNull @NotNull String token) ;
+    boolean isTokenValid(@NonNull @NotNull String token) ;
+
+    Claims extractClaims(@NonNull @NotNull String token) ;
 
 
 }

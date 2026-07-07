@@ -27,49 +27,12 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 public class ManagerEndpoints {
-    private
-       UserContext user;
 
-    private
-       ManagerService managerService;
+    private UserContext user;
 
-    private
-       JwtService jwtService;
+    private ManagerService managerService;
 
-
-
-    @GetMapping("/update/food/price")
-    @Transactional
-    void updateFoodPrice(@RequestParam(value = "fId") Integer foodId, Double price) {
-        Integer outletId = (Integer)user.getCredential();
-        if(outletId== null)
-            throw new UnAuthorizedException(
-                    "User trying unautherized outlet access",
-                    "No Linked Outlet");
-        managerService.updateFoodPrice(outletId,foodId,price);
-    };
-
-    @GetMapping("/update/food/available")
-    @Transactional
-    void makeFoodAvailable(@RequestParam Integer foodId){
-        Integer outletId = (Integer) user.getCredential();
-        if(outletId== null)
-            throw new UnAuthorizedException(
-                    "User trying unautherized outlet access"
-                    ,"No Linked Outlet");
-        managerService.makeFoodAvailable(outletId,foodId);
-    };
-
-    @GetMapping("/update/food/unavailable")
-    @Transactional
-    void makeFoodUnavailable(@RequestParam (value = "f")Integer foodId){
-        Integer outletId = (Integer)user.getCredential();
-        if(outletId== null)
-            throw new UnAuthorizedException(
-                    "User trying unautherized outlet access"
-                    ,"No Linked Outlet");
-        managerService.makeFoodUnavailable(outletId,foodId);
-    };
+    private JwtService jwtService;
 
     @GetMapping("/update/outlet/open")
     @Transactional
@@ -93,6 +56,44 @@ public class ManagerEndpoints {
         managerService.closeOutlet(outletId);
     };
 
+
+
+    @GetMapping("/update/food/available")
+    @Transactional
+    void makeFoodAvailable(@RequestParam(value = "fId") Integer foodId){
+        Integer outletId = (Integer) user.getCredential();
+        if(outletId== null)
+            throw new UnAuthorizedException(
+                    "User trying unautherized outlet access"
+                    ,"No Linked Outlet");
+        managerService.makeFoodAvailable(outletId,foodId);
+    };
+
+    @GetMapping("/update/food/unavailable")
+    @Transactional
+    void makeFoodUnavailable(@RequestParam (value = "fId")Integer foodId){
+        Integer outletId = (Integer)user.getCredential();
+        if(outletId== null)
+            throw new UnAuthorizedException(
+                    "User trying unautherized outlet access"
+                    ,"No Linked Outlet");
+        managerService.makeFoodUnavailable(outletId,foodId);
+    }
+
+
+
+    @GetMapping("/update/food/price")
+    @Transactional
+    void updateFoodPrice(@RequestParam(value = "fId") Integer foodId,@RequestParam(value="price") Double price) {
+        Integer outletId = (Integer)user.getCredential();
+        if(outletId== null)
+            throw new UnAuthorizedException(
+                    "User trying unautherized outlet access",
+                    "No Linked Outlet");
+        managerService.updateFoodPrice(outletId,foodId,price);
+    };
+
+
     @GetMapping("/view/outlet")
     @Transactional
     OutletR viewOutlet() throws BadRequestException {
@@ -103,7 +104,8 @@ public class ManagerEndpoints {
                     ,"No Linked Outlet");
         return managerService.viewOutlet(outletId);
     }
-    @GetMapping
+
+    @GetMapping("/view/foods")
     @Transactional
     List<FoodR> viewAllFoods(){
         Integer outletId = (Integer) user.getCredential();

@@ -13,7 +13,6 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class JwtHandShakeInterceptor implements HandshakeInterceptor {
 
         String token = authHeader.substring(7);
 
-        if (!jwtService.isTokenValid(token))
+        if (jwtService.isTokenValid(token))
             return false;
 
         Claims claims = jwtService.extractClaims(token);
