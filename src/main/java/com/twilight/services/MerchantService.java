@@ -25,7 +25,7 @@ public interface MerchantService {
 
     List<OutletDetailed> viewAllOutlets(@MobileNumber String merchantMobNo);
 
-    Merchant getMerchant(String mobNo);
+    void getMerchant(String mobNo);
 
     List<OutletInvitation> viewAllInvitation(@MobileNumber String merchantMobNo);
 

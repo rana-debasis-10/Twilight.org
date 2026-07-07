@@ -9,6 +9,7 @@ import com.twilight.types.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,13 @@ public class AuthEndpoints {
     private JwtService jwtService;
 
     @GetMapping("/login")
+    @Transactional
     void login(@RequestParam(name = "m",required = true) @MobileNumber @NotBlank String mobNo){
         messageService.sendOtp(mobNo);
     };
 
     @PostMapping ("/verify")
+    @Transactional
     Jwt verify(
             @RequestParam(name = "m", required = true) @MobileNumber @NotBlank String mobNo,
             @RequestParam(name = "o" ,required = true) Integer otp) throws UnAuthorizedException {

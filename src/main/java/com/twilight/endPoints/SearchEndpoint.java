@@ -6,6 +6,7 @@ import com.twilight.services.SearchService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +24,12 @@ public class SearchEndpoint {
     private SearchService searchService ;
 
     @GetMapping("/outlet")
+    @Transactional
     public List<OutletR> findNearestOutlet(@RequestParam double lat, @RequestParam double lon ){
         return searchService.findNearestOutlets(lat,lon);
     }
     @GetMapping("/food")
+    @Transactional
     public List<FoodR> getFoods(@RequestParam(name = "o")Integer outletId){
         return searchService.getMenuByOutlet(outletId);
     }

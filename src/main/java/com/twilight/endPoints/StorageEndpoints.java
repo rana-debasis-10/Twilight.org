@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class StorageEndpoints {
     @Cacheable( value = "images",
     key = "#key")
     @GetMapping("/download")
+    @Transactional
     public ResponseEntity<Resource> download(
             @RequestParam @NotBlank String key) {
         Resource resource = storageService.download(key);

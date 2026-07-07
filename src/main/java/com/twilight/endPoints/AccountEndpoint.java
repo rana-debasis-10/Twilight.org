@@ -103,7 +103,6 @@ public class AccountEndpoint {
     }
 
     @GetMapping("/manager/invitations")
-
     @Transactional
     public List<OutletInvitation> viewInvitation(){
         String mobNo= user.getMobNo();

@@ -24,15 +24,15 @@ import java.util.List;
 public class MerchantServiceImpl implements MerchantService {
     @Autowired
     RestaurantRepository restaurantRepository;
+
     @Autowired
     MerchantRepository merchantRepository;
 
     @Autowired
     OutletInvitationRepository invitationRepository;
+
     @Autowired
     OutletRepository outletRepository;
-    @Autowired
-    KafkaTemplate<String,Object> kafkaTemplate;
 
     @Autowired
     ProductRepository productRepository;
@@ -49,8 +49,8 @@ public class MerchantServiceImpl implements MerchantService {
         merchantRepository.save(merchant);
     }
     @Override
-    public Merchant getMerchant(String mobNo) {
-        return merchantRepository.findById(mobNo).orElseThrow(
+    public void getMerchant(String mobNo) {
+        merchantRepository.findById(mobNo).orElseThrow(
                 ()-> new NotFoundException(
                         "Merchant not found"
                         ,"Could not find you linked account"));
@@ -97,6 +97,10 @@ public class MerchantServiceImpl implements MerchantService {
                     ()-> new BadRequestException(
                             "User is trying to find a invitation",
                             "Invitation does not exist"));
+        if(!invitation.getInviterMobileNo().equals(merchantMobNo)){
+            throw new UnAuthorizedException("User is trying unauthorized access","Unauthorized");
+        }
+
         invitation.setInviteeMobileNo(inviteeMobNo);
         return invitationRepository.save(invitation);
     }

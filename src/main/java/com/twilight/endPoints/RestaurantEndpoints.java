@@ -38,18 +38,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RestaurantEndpoints {
      private Location location;
-
-    private   ProductMapper productMapper;
-
-    private   MerchantService merchantService;
+     private   ProductMapper productMapper;
+     private   MerchantService merchantService;
 
     private   UserContext userContext;
 
     private   StorageService storageService;
 
     private   ImageValidator imageValidator;
-
-
 
     private   LocationService geoCoding;
 
@@ -58,42 +54,49 @@ public class RestaurantEndpoints {
 
     @PostMapping("/create/outlet")
     @Transactional
-    @Validated
+
     public void create(@RequestBody Address address) throws UnAuthorizedException{
         String mobNo = userContext.getMobNo();
 
         Location location = geoCoding.getLocation(address);
         merchantService.createOutlet(mobNo, location);
     }
-    @PostMapping("/outlet/invite")
-    @Transactional
-    @Validated
-    public OutletInvitation inviteManager(@MobileNumber @RequestParam("m") String inviteeMobNo, @RequestParam("o") Integer outletId){
-        String merchantMobNo = userContext.getMobNo();
-        return merchantService.invite(merchantMobNo,inviteeMobNo,outletId);
-    }
+
     @GetMapping("/view")
     @Transactional
-    @Validated
+
     public RestaurantR showRestaurant(){
         String merchantMobNo = userContext.getMobNo();
         return restaurantMapper.toDto(merchantService.findRestaurantByMobNo(merchantMobNo));
     }
 
+    @PostMapping("/outlet/invite")
+    @Transactional
+
+    public OutletInvitation inviteManager(@MobileNumber @RequestParam("m") String inviteeMobNo, @RequestParam("o") Integer outletId){
+        String merchantMobNo = userContext.getMobNo();
+        return merchantService.invite(merchantMobNo,inviteeMobNo,outletId);
+    }
+
+    @GetMapping("/outlet/invitations")
+    @Transactional
+    public List<OutletInvitation> getAllInvitations(){
+        String mobNo = userContext.getMobNo();
+        return merchantService.viewAllInvitation(mobNo);
+    }
+
+
     @PostMapping("/outlet/invite/other")
     @Transactional
-    @Validated
     public OutletInvitation inviteOtherManager(
             @MobileNumber @RequestParam("m") String inviteeMobNo,
-            @RequestParam("o") Integer outletId,
-            @RequestParam("i")Integer invitationId
+            @RequestParam("o") Integer outletId
     ) throws BadRequestException {
         String merchantMobNo = userContext.getMobNo();
         return merchantService.inviteSomeoneElse(merchantMobNo,inviteeMobNo,outletId);
     }
-    @GetMapping("/outlet/viewAll")
+    @GetMapping("/outlets")
     @Transactional
-    @Validated
     public List<OutletDetailed> viewAllOutlets(){
         String merchantMobNo = userContext.getMobNo();
         return  merchantService.viewAllOutlets(merchantMobNo);
@@ -101,14 +104,13 @@ public class RestaurantEndpoints {
 
 
     @PostMapping(
-            value = "/menu/add",
+            value = "/menu/",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     @Transactional
-    @Validated
     public void addProducts(
             @RequestPart("products")@Valid List<ProductR> products,
-            @RequestPart("file")@Valid @NotNull List<MultipartFile> images
+            @RequestPart("image")@Valid @NotNull List<MultipartFile> images
     ) throws IOException, NotFoundException {
 
         String mobNo = userContext.getMobNo();
@@ -157,14 +159,12 @@ public class RestaurantEndpoints {
 
 
     @PostMapping(
-            value ="/menu/add/product",
+            value ="/menu/add/",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     @Transactional
-    @Validated
-
     public void addProduct(@RequestPart("products")@Valid @NotNull ProductR productR,
-                           @RequestPart("file") @Valid @NotNull MultipartFile image) throws IOException {
+                           @RequestPart("image") @Valid @NotNull MultipartFile image) throws IOException {
         String mobNo = userContext.getMobNo();
 
         imageValidator.validateImage(image);

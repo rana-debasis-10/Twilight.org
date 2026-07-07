@@ -40,7 +40,7 @@ public class ManagerEndpoints {
 
     @GetMapping("/update/food/price")
     @Transactional
-    void updateFoodPrice(@RequestParam Integer foodId, Double price) {
+    void updateFoodPrice(@RequestParam(value = "fId") Integer foodId, Double price) {
         Integer outletId = (Integer)user.getCredential();
         if(outletId== null)
             throw new UnAuthorizedException(
