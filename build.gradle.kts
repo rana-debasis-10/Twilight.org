@@ -85,6 +85,9 @@ dependencies {
 	//JWT API Dependencies
     implementation ("io.jsonwebtoken:jjwt-api:0.13.0")
 
+	//Data faker
+	implementation("net.datafaker:datafaker:2.4.2")
+
 	//JWT API Implementations
     runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.13.0")
 

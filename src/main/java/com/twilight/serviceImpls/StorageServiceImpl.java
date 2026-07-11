@@ -3,6 +3,7 @@ package com.twilight.serviceImpls;
 import com.twilight.exceptions.NotFoundException;
 import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.services.StorageService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+
 public class StorageServiceImpl implements StorageService {
 
     @Autowired

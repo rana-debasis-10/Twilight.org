@@ -7,6 +7,7 @@ import com.twilight.repositories.FoodRepository;
 import com.twilight.repositories.OutletRepository;
 import com.twilight.services.SearchService;
 import com.twilight.types.OutletStatus;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class SearchServiceImpl implements SearchService {
     @Autowired
     OutletRepository outletRepository;

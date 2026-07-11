@@ -8,6 +8,7 @@ import com.twilight.services.ManagerService;
 import com.twilight.utils.UserContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.coyote.BadRequestException;
@@ -25,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/manager")
 @Validated
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ManagerEndpoints {
 
     private UserContext user;

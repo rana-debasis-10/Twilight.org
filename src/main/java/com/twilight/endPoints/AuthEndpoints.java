@@ -7,6 +7,7 @@ import com.twilight.services.JwtService;
 import com.twilight.services.MessageService;
 import com.twilight.types.Role;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @Validated
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthEndpoints {
     
     private MessageService messageService;

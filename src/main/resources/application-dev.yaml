@@ -1,7 +1,10 @@
 #Spring Configuration ------------------------------------------#
 spring:
+  profiles:
+    active: dev
   application:
     name: Twilight
+
 
   #Servlet Configuration ----------------------------------------#
   servlet:
@@ -20,7 +23,6 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
 
 
   #Redis Configuration -------------------------------------------#
@@ -76,3 +78,7 @@ server:
   error:
     include-binding-errors: always
     include-message: always
+
+app:
+  seed:
+    enabled: true

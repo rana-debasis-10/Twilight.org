@@ -38,12 +38,12 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/account/**",
                                 "/account"
-                        ).hasRole("undefined")
+                        ).hasRole("verified")
 
                         // Merchant APIs
                         .requestMatchers(
-                                "/restaurant/**",
-                                "/restaurant"
+                                "/merchant/**",
+                                "/merchant"
                         ).hasRole("merchant")
                         .requestMatchers(
                                 "/manager/**",

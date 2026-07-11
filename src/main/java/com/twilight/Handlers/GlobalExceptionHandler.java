@@ -1,6 +1,7 @@
 package com.twilight.Handlers;
 import com.twilight.exceptions.GeocodingError;
 import com.twilight.exceptions.*;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,5 +70,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleFileTypeExceptions(GeocodingError ex){   
         log.info("\n{}\n", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new Message(ex.getError()));
+    }
+
+    @ExceptionHandler( ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex){
+        log.info("\n{}\n", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Invalid request"));
     }
 }

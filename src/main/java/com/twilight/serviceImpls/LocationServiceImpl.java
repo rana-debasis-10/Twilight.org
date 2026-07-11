@@ -5,6 +5,7 @@ import com.twilight.dataTransferObjects.Location;
 import com.twilight.exceptions.GeocodingError;
 import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.services.LocationService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Distance;
@@ -26,6 +27,8 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
+
 public class LocationServiceImpl implements LocationService {
     @Autowired
     private RestTemplate restTemplate;

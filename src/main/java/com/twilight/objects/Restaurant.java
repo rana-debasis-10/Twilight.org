@@ -36,7 +36,7 @@ public class Restaurant {
     private Merchant merchant;
 
     @NotNull
-    boolean menuAdded;
+    boolean menuAdded = false;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();

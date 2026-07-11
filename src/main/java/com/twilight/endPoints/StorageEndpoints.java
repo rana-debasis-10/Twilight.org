@@ -4,6 +4,7 @@ import com.twilight.services.StorageService;
 
 import jakarta.validation.constraints.NotBlank;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/images")
 @Validated
+@AllArgsConstructor
 public class StorageEndpoints {
     
     private StorageService storageService;

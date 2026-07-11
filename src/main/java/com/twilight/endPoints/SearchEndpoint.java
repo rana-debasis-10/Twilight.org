@@ -4,6 +4,7 @@ import com.twilight.dataTransferObjects.FoodR;
 import com.twilight.dataTransferObjects.OutletR;
 import com.twilight.services.SearchService;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/search")
 @Validated
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SearchEndpoint {
 
     private SearchService searchService ;

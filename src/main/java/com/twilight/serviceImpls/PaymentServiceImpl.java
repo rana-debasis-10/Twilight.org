@@ -8,6 +8,7 @@ import com.twilight.dataTransferObjects.Payment;
 import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.services.PaymentService;
+import lombok.AllArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+
 public class PaymentServiceImpl implements PaymentService {
     @Value("${razorpay.key.secret}")
     private String keySecret;

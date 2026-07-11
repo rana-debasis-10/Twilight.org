@@ -16,12 +16,15 @@ import com.twilight.repositories.OutletRepository;
 import com.twilight.services.ManagerService;
 import com.twilight.types.InvitationStatus;
 import com.twilight.types.OutletStatus;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
+
 public class ManagerServiceImpl implements ManagerService {
     @Autowired
     OutletInvitationRepository outletInvitationRepository;

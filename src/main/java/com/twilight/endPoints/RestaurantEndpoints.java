@@ -17,6 +17,7 @@ import com.twilight.validators.ImageValidator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.coyote.BadRequestException;
@@ -35,9 +36,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/merchant")
 @Validated
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RestaurantEndpoints {
-     private Location location;
      private   ProductMapper productMapper;
      private   MerchantService merchantService;
 

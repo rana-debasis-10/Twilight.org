@@ -17,6 +17,7 @@ import com.twilight.services.*;
 import com.twilight.types.DeliveryStatus;
 import com.twilight.types.PaymentMethod;
 import com.twilight.types.PaymentStatus;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+
 public class OrderServiceImpl implements OrderService {
 
     @Autowired

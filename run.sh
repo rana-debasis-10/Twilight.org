@@ -1,5 +1,6 @@
 #!/bin/bash
 clear
+
 docker compose down
 
 # shellcheck disable=SC2164
@@ -7,8 +8,6 @@ docker compose down
 ./gradlew clean 
 
 echo "Gradle clean complete"
-
-cd ~/workspace/Twilight-Foodz
 
 ./gradlew build -x test 
 
@@ -20,7 +19,10 @@ source .env
 
 echo "Environmental variables exported"
 
-docker compose up -d 
+docker compose up -d
+
+clear
+docker compose logs -f backend
 
 
 

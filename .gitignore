@@ -45,3 +45,4 @@ dump.txt
 *.txt
 .run/
 test*
+*.csv

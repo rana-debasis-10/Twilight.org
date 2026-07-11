@@ -88,7 +88,10 @@ public class AccountEndpoint {
 
         String key = storageService.generateKey("restaurants", image.getOriginalFilename());
 
+        restaurant.setImage(key);
+
         merchantService.createMerchant(merchant, restaurant);
+
         storageService.upload(image,key);
 
         return new Jwt(jwtService.generateToken(mobNo, Role.merchant));

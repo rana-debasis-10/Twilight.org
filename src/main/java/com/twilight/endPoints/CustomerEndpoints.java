@@ -12,6 +12,7 @@ import com.twilight.services.PaymentService;
 import com.twilight.utils.UserContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/customer")
 @Validated
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CustomerEndpoints {
 
     private CustomerService customerService;

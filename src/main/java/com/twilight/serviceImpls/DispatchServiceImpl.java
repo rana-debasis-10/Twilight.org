@@ -13,6 +13,7 @@ import com.twilight.repositories.FoodRepository;
 import com.twilight.repositories.OutletRepository;
 import com.twilight.repositories.ProductRepository;
 import com.twilight.services.LocationService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -26,6 +27,8 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@AllArgsConstructor
+
 public class DispatchServiceImpl implements DispatchService {
     @Autowired
     KafkaTemplate<String,Object> kafka;

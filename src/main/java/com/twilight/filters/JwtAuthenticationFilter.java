@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,17 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Component
+@AllArgsConstructor
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-        @Autowired
-        JwtService jwtService;
+    @Autowired
+    JwtService jwtService;
 
-        @Autowired
-        public JwtAuthenticationFilter(JwtService jwtService) {
-            this.jwtService = jwtService;
-        }
-
-        @Override
+    @Override
         protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
             String authHeader = request.getHeader("Authorization");
@@ -40,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String token = authHeader.substring(7);
-            if (jwtService.isTokenValid(token)) {
+            if (!jwtService.isTokenValid(token)) {
                 filterChain.doFilter(request, response);
                 return;
             }

@@ -9,12 +9,14 @@ import com.twilight.repositories.CustomerRepository;
 import com.twilight.services.CustomerService;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
+@AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CustomerRepository customerRepository;

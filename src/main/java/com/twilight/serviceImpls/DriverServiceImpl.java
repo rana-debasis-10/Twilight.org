@@ -5,10 +5,13 @@ import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.Driver;
 import com.twilight.repositories.DriverRepository;
 import com.twilight.services.DriverService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
+
 public class DriverServiceImpl implements DriverService {
 
 
