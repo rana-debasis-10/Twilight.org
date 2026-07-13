@@ -1,7 +1,6 @@
 package com.twilight.dataTransferObjects;
 
-import com.twilight.annotations.MobileNumber;
-import com.twilight.objects.OrderAddress;
+import com.twilight.utils.annotations.MobileNumber;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

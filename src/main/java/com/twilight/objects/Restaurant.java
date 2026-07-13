@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.checkerframework.common.aliasing.qual.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class Restaurant {
 
     @NotNull
     @Column(unique = true)
-    private String fssai;
+    private String FSSAILicenseNo;
 
     @OneToOne
     @JoinColumn(name = "mob_no")

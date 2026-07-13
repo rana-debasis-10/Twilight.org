@@ -1,7 +1,7 @@
 package com.twilight.configurations;
 
-import com.twilight.Handlers.WebSocketHandler;
-import com.twilight.interceptor.JwtHandShakeInterceptor;
+import com.twilight.security.Handlers.WebSocketHandler;
+import com.twilight.security.interceptor.JwtHandShakeInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;

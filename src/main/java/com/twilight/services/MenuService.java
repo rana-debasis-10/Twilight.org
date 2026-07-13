@@ -1,6 +1,6 @@
 package com.twilight.services;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.exceptions.NotFoundException;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.Product;

@@ -1,6 +1,6 @@
 package com.twilight.services;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.annotations.NotNull;
 

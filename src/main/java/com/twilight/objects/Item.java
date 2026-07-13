@@ -1,5 +1,6 @@
 package com.twilight.objects;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -16,18 +17,18 @@ public class Item {
     private Integer id;
 
     @Min(1)
-    @Max(6)
-    @NotNull
+    @Max(5)
     private Integer quantity;
 
-    @NotNull
+    @DecimalMin(value = "0.0")
     private Double price;
 
-    @NotNull
+    @DecimalMin(value = "0.0")
     private Double subtotal;
 
-    @NotNull
-    private Integer foodId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "food_id")
+    Food food;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")

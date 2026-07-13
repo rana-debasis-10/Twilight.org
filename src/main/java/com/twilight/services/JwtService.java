@@ -1,6 +1,6 @@
 package com.twilight.services;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.types.Role;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.constraints.NotNull;

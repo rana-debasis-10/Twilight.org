@@ -1,16 +1,16 @@
 package com.twilight.endPoints;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.dataTransferObjects.*;
 
 import com.twilight.exceptions.NotFoundException;
 import com.twilight.exceptions.UnAuthorizedException;
-import com.twilight.mappers.ProductMapper;
-import com.twilight.mappers.RestaurantMapper;
+import com.twilight.utils.mappers.ProductMapper;
+import com.twilight.utils.mappers.RestaurantMapper;
 import com.twilight.objects.OutletInvitation;
 import com.twilight.objects.Product;
 import com.twilight.services.*;
-import com.twilight.utils.UserContext;
+import com.twilight.security.UserContext;
 
 import com.twilight.validators.ImageValidator;
 
@@ -18,7 +18,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.MediaType;

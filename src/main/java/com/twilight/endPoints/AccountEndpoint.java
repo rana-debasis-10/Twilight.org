@@ -4,12 +4,12 @@ import com.twilight.dataTransferObjects.DriverR;
 import com.twilight.dataTransferObjects.Jwt;
 import com.twilight.dataTransferObjects.MerchantR;
 import com.twilight.dataTransferObjects.RestaurantR;
-import com.twilight.mappers.MerchantMapper;
-import com.twilight.mappers.RestaurantMapper;
+import com.twilight.utils.mappers.MerchantMapper;
+import com.twilight.utils.mappers.RestaurantMapper;
 import com.twilight.objects.*;
 import com.twilight.services.*;
 import com.twilight.types.Role;
-import com.twilight.utils.UserContext;
+import com.twilight.security.UserContext;
 import com.twilight.validators.ImageValidator;
 
 import jakarta.transaction.Transactional;

@@ -1,6 +1,6 @@
 package com.twilight.repositories;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.objects.Restaurant;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;

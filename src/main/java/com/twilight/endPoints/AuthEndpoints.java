@@ -1,6 +1,6 @@
 package com.twilight.endPoints;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.dataTransferObjects.Jwt;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.services.JwtService;
@@ -8,7 +8,6 @@ import com.twilight.services.MessageService;
 import com.twilight.types.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;

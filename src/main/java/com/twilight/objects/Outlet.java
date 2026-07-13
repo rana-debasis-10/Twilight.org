@@ -1,6 +1,6 @@
 package com.twilight.objects;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.types.OutletStatus;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -9,10 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tools.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,13 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter@Setter
 
-@Table(uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "outlet_location",
-                        columnNames = {"longitude", "latitude"}
-                )
-        }
-)
+
 public class Outlet implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,21 +32,18 @@ public class Outlet implements Serializable {
     @OneToMany(mappedBy = "outlet", cascade = CascadeType.ALL)
     private List<Food> foods;
 
-    @NotNull
-    private Double longitude;
-    @NotNull
-    private Double latitude;
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id")
+    Location location;
 
     @Enumerated(EnumType.STRING)
     private OutletStatus outletStatus;
 
-    @NotNull
-    @MobileNumber
-    private String merchantMobNo;
+    @OneToOne(cascade = CascadeType.ALL)
+    Manager manager;
 
-    @Column(unique = true)
-    @Nullable
-    @MobileNumber
-    private String managerMobNo;
+    @ManyToOne
+    @JoinColumn(name= "mob_no")
+    Merchant merchant;
 
 }

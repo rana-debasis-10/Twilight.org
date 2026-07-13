@@ -3,7 +3,7 @@ package com.twilight.serviceImpls;
 import com.twilight.exceptions.NotFoundException;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.Customer;
-import com.twilight.objects.CustomerAddress;
+import com.twilight.objects.Location;
 import com.twilight.repositories.CustomerAddressRepository;
 import com.twilight.repositories.CustomerRepository;
 import com.twilight.services.CustomerService;
@@ -44,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void addAddressAsType(@NonNull Customer customer, @NotNull CustomerAddress address) {
+    public void addAddressAsType(@NonNull Customer customer, @NotNull Location address) {
         address.setCustomer(customer);
         customerAddressRepository.save(address);
     }

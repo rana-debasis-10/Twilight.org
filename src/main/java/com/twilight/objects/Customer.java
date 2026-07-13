@@ -1,19 +1,14 @@
 package com.twilight.objects;
 
-import com.twilight.types.AddressType;
+import com.twilight.utils.annotations.MobileNumber;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import com.twilight.annotations.MobileNumber;
 
 
 @Entity
@@ -22,9 +17,14 @@ import com.twilight.annotations.MobileNumber;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "mob_no")
+    private User user;
+
     @Id
     @MobileNumber
-    @Column(name = "mob_no", length = 15)
+    @Column(name = "mob_no" ,length = 10)
     private String mobNo;
 
     @NotNull
@@ -34,7 +34,7 @@ public class Customer {
     private List<Order> orders;
 
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
-    private List<CustomerAddress> addresses ;
+    private List<Location> addresses ;
 
 
 }

@@ -46,3 +46,5 @@ dump.txt
 .run/
 test*
 *.csv
+application-prod.yaml
+

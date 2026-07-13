@@ -1,48 +1,45 @@
 package com.twilight.validators;
 
-import com.twilight.exceptions.BadRequestException;
-import com.twilight.exceptions.InvalidFileException;
+import com.twilight.utils.annotations.Image;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
-@Component
-public class ImageValidator {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ImageValidator implements ConstraintValidator<Image, MultipartFile> {
+
     @Autowired
-    Tika tika ;
+    private Tika tika;
 
     private final Set<String> ALLOWED_TYPES = Set.of(
             "image/jpeg",
+            "image/jpg",
+            "image/svg",
             "image/png",
             "image/webp"
     );
-    public void validateImages(List<MultipartFile> images) throws IOException {
-        for (MultipartFile image : images) {
-            validateImage(image);
-        }
+
+    @Override
+    public void initialize(Image constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
     }
-    public void validateImage(MultipartFile file) throws IOException {
 
-        String mimeType =
-                tika.detect(file.getInputStream());
-        if(file.isEmpty())
-            throw new BadRequestException(
-                    "User trying to upload file type of this"
-                            + file.getOriginalFilename()
-                    ,"Invalid file type :"
-                    + file.getOriginalFilename());
-
-        if(!ALLOWED_TYPES.contains(mimeType))
-            throw new InvalidFileException(
-                    "User trying to upload file type of this"
-                            + file.getOriginalFilename()
-                    ,"Invalid file type :"
-                    + file.getOriginalFilename());
-
+    @Override
+    public boolean isValid(MultipartFile value, ConstraintValidatorContext context) {
+        String mimeType = null;
+        try {
+            mimeType = tika.detect(value.getInputStream());
+        } catch (IOException e) {
+            return false;
+        }
+        return mimeType != null && ALLOWED_TYPES.contains(mimeType);
     }
 }

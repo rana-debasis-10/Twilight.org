@@ -1,6 +1,6 @@
 package com.twilight.services;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.dataTransferObjects.FoodR;
 import com.twilight.dataTransferObjects.OutletR;
 import com.twilight.exceptions.NotFoundException;

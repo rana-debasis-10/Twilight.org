@@ -1,6 +1,6 @@
 package com.twilight.serviceImpls;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.dataTransferObjects.MenuUpdateR;
 import com.twilight.dataTransferObjects.OutletDetailed;
 import com.twilight.dataTransferObjects.Location;
@@ -16,7 +16,6 @@ import com.twilight.types.InvitationStatus;
 import com.twilight.types.OutletStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

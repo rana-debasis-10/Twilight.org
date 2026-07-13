@@ -1,6 +1,6 @@
 package com.twilight.objects;
 
-import com.twilight.annotations.MobileNumber;
+import com.twilight.utils.annotations.MobileNumber;
 import com.twilight.types.InvitationStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,15 +15,16 @@ public class OutletInvitation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @MobileNumber
-    private String inviteeMobileNo;
+    @OneToOne
+    @JoinColumn(name = "mob_no")
+    Merchant merchant;
 
     @MobileNumber
     private String inviterMobileNo;
 
     @NotNull
-    @Column(unique = true)
-    private Integer outletId;
+    @JoinColumn(name ="outlet_id")
+    Outlet outlet;
 
     @Enumerated(EnumType.STRING)
     private InvitationStatus status;

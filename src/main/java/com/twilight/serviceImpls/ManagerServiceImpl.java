@@ -28,14 +28,10 @@ import java.util.List;
 public class ManagerServiceImpl implements ManagerService {
     @Autowired
     OutletInvitationRepository outletInvitationRepository;
-
-
     @Autowired
     OutletRepository outletRepository;
-
     @Autowired
     FoodRepository foodRepository;
-
     @Autowired
     ManagerRepository managerRepository;
 

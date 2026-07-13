@@ -5,14 +5,11 @@ import com.twilight.dataTransferObjects.OutletR;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.services.JwtService;
 import com.twilight.services.ManagerService;
-import com.twilight.utils.UserContext;
+import com.twilight.security.UserContext;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import org.apache.coyote.BadRequestException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
