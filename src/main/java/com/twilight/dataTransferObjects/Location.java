@@ -1,9 +1,11 @@
 package com.twilight.dataTransferObjects;
-
-
-import jakarta.validation.constraints.Min;
-import org.checkerframework.checker.units.qual.min;
-
+import com.twilight.types.Label;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record Location(@NotNull Double latitude, @NotNull Double longitude){}
+public record Location(
+        double latitude,
+        double longitude,
+        @NotBlank String description,
+        Label label
+){}

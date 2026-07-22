@@ -152,7 +152,7 @@ public class RestaurantEndpoints {
 
             productsDb.add(productDb);
         }
-        merchantService.addAllToMenu(mobNo,productsDb);
+        merchantService.updateMenu(mobNo,productsDb);
     }
 
 

@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class GlobalApiExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
@@ -46,9 +46,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundExceptions(NotFoundException ex){
-        log.info("\n{}\n", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(ex.getError()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+    @ExceptionHandler(NotDeliverableException.class)
+    public ResponseEntity<?> handleNotDeliverableExceptions(NotDeliverableException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Not Deliverable"));
+    }
+
 
     @ExceptionHandler(UnAuthorizedException.class)
     public ResponseEntity<?> handleUnauthorizedExceptions(UnAuthorizedException ex){
@@ -77,4 +81,5 @@ public class GlobalExceptionHandler {
         log.info("\n{}\n", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Invalid request"));
     }
+
 }

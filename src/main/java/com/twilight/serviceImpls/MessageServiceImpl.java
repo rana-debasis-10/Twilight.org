@@ -45,20 +45,20 @@ public class MessageServiceImpl implements MessageService {
                     ,"Some Service is unavailable at this moment");
         }
 
-        /**
+        /*
         * Testing code
         */
         System.out.println("\n::::::::::::::::Generated OTP is ::::::::::::::::: "+ otp);
 
 
-        /**
+        /*
          * Production Code...
          */
-//        HttpHeaders headers = new HttpHeaders();
-//
-//        headers.set("number", mobNo);
-//        headers.set("otp", otp);
-//        headers.set("key", apiKey);
+///        HttpHeaders headers = new HttpHeaders();
+///
+// /       headers.set("number", mobNo);
+//  /      headers.set("otp", otp);
+//       headers.set("key", apiKey);
 //
 //        HttpEntity<Void> request =
 //                new HttpEntity<>(headers);

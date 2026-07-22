@@ -1,9 +1,12 @@
 package com.twilight.repositories;
 
-import com.twilight.dataTransferObjects.Location;
 import com.twilight.dataTransferObjects.OutletDetailed;
 import com.twilight.dataTransferObjects.OutletR;
 import com.twilight.objects.Outlet;
+import com.twilight.objects.OutletLocation;
+import com.twilight.types.OutletStatus;
+import org.jspecify.annotations.NonNull;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,53 +16,59 @@ import java.util.Optional;
 
 public interface OutletRepository extends JpaRepository<Outlet,Integer> {
     @Query(value = """
-                    SELECT
-                    o.id AS outletId,
-                    r.name AS restaurantName,
-                    r.image AS restaurantImage,
-                    o.outlet_status AS outletStatus,
-                    o.latitude as latitude,
-                    o.longitude as longitude
-                    FROM outlet o
-                    JOIN restaurant r
-                    ON o.restaurant_id = r.id
-                    WHERE o.outlet_status = open
-                    ORDER BY ST_SetSRID(
-                    ST_MakePoint(o.longitude, o.latitude),
-                    4326
-                    ) <-> ST_SetSRID(
-                    ST_MakePoint(:lon,:lat),
-                    4326
-                    )
-                    LIMIT :limit
-                    """,
+    SELECT
+        o.id AS id,
+        r.name AS name,
+        r.image AS image,
+        o.outlet_status AS status,
+        ol.latitude AS latitude,
+        ol.longitude AS longitude
+    FROM outlet o
+    INNER JOIN restaurant r
+        ON r.id = o.restaurant_id
+    INNER JOIN outlet_location ol
+        ON ol.outlet_id = o.id
+    WHERE o.outlet_status = :status
+    ORDER BY
+        ST_SetSRID(
+            ST_MakePoint(ol.longitude, ol.latitude),
+            4326
+        )
+        <->
+        ST_SetSRID(
+            ST_MakePoint(:longitude, :latitude),
+            4326
+        )
+    LIMIT :limit
+    """,
             nativeQuery = true)
-    List<Object[]> findNearestOutlets(
-            @Param("lat") double lat,
-            @Param("lon") double lon,
+    List<OutletR> findNearestOutlets(
+            @Param("latitude") double lat,
+            @Param("longitude") double lon,
+            @Param("status") OutletStatus status,
             @Param("limit") int limit
     );
 
-    List<Outlet> findAllByRestaurantId(
-            Integer restaurantId
-    );
-
     @Query("""
-                select new com.twilight.dataTransferObjects.Location(
+                SELECT
+                o.id,
+                r.name ,
+                r.image ,
+                o.outletStatus AS status,
                 o.latitude,
-                o.longitude
-                )
-                from Outlet as o
-                
-                where o.id = :outletId
-                and o.outletStatus =  com.twilight.types.OutletStatus.open
-                """)
-    Location findLocationByIdAndStatus(
-            @Param("outletId") Integer outletId
+                o.longitude ,
+                o.managerMobNo
+                FROM Outlet o
+                JOIN o.restaurant r
+                WHERE o.merchantMobNo = :merchantMobNo
+    """)
+
+    List<OutletDetailed> findAllByMerchantMobNo(
+            String merchantMobNo
     );
 
-
-    Optional<String> findIdByManagerMobNo(String managerMobNo);
+    @EntityGraph(attributePaths = {"merchant","outletInvitation"})
+    Optional<Outlet> findByIdAndMerchantMobNo(Integer id ,String managerMobNo);
 
 
     @Query("""
@@ -78,19 +87,11 @@ public interface OutletRepository extends JpaRepository<Outlet,Integer> {
     Optional<OutletR> findByOutletId(
             @Param("outletId") Integer outletId
     );
-    @Query("""
-                SELECT new com.twilight.dataTransferObjects.OutletDetailed(
-                o.id,
-                r.name ,
-                r.image ,
-                o.outletStatus,
-                o.latitude,
-                o.longitude ,
-                o.managerMobNo
-                )
-                FROM Outlet o
-                JOIN o.restaurant r
-                WHERE o.merchantMobNo = :merchantMobNo
-    """)
-    List<OutletDetailed> findAllByMerchantMobNo(@Param("merchantMobNo")String merchantMobNo);
+
+    @EntityGraph(attributePaths = {"location"})
+    @NonNull
+    Optional<Outlet> findById(@NonNull Integer outletId);
+
+    List<Outlet> findAllByRestaurantId(Integer restaurantId);
+
 }

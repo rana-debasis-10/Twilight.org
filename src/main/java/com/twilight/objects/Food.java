@@ -2,11 +2,14 @@ package com.twilight.objects;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.checkerframework.common.value.qual.DoubleVal;
 
 @Entity
 @NoArgsConstructor
@@ -23,8 +26,9 @@ public class Food {
     @NotNull
     private Product product;
 
-    @Nullable
-    private Double priceOverride;
+    @Min(0)
+    private double price;
+
     @NotNull
     private boolean available;
 

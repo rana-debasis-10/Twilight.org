@@ -5,10 +5,7 @@ import com.twilight.types.OutletStatus;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter@Setter
+@Builder
 
 
 public class Outlet implements Serializable {
@@ -34,10 +32,11 @@ public class Outlet implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
-    Location location;
+    OutletLocation location;
 
     @Enumerated(EnumType.STRING)
-    private OutletStatus outletStatus;
+    private OutletStatus status;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     Manager manager;
@@ -45,5 +44,8 @@ public class Outlet implements Serializable {
     @ManyToOne
     @JoinColumn(name= "mob_no")
     Merchant merchant;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    OutletInvitation outletInvitation;
 
 }

@@ -1,92 +1,47 @@
 package com.twilight.serviceImpls;
 
-import com.twilight.dataTransferObjects.FoodR;
 import com.twilight.dataTransferObjects.Location;
 import com.twilight.dataTransferObjects.OutletR;
+import com.twilight.objects.Food;
 import com.twilight.repositories.FoodRepository;
 import com.twilight.repositories.OutletRepository;
 import com.twilight.services.SearchService;
 import com.twilight.types.OutletStatus;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.twilight.utils.Constants;
+import com.twilight.utils.GeoUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SearchServiceImpl implements SearchService {
-    @Autowired
-    OutletRepository outletRepository;
 
-    @Autowired
-    FoodRepository foodRepository;
+    final OutletRepository outletRepository;
+
+    final FoodRepository foodRepository;
+
+
     @Override
     @Cacheable("outlets")
     public List<OutletR> findNearestOutlets(
             Double lat,
             Double lon) {
 
-        return
-                outletRepository.findNearestOutlets(lat, lon, 300)
+        return outletRepository.findNearestOutlets(lat,lon, OutletStatus.open,Constants.MAX_OUTLET_FILTER_LIMIT)
                         .stream()
-                        .map(row -> new OutletR(
-                                ((Number) row[0]).intValue(),
-                                (String) row[1],
-                                (String) row[2],
-                                OutletStatus.valueOf((String) row[3]),
-                                ((Number) row[4]).doubleValue(),
-                                ((Number) row[5]).doubleValue()
-                        ))
                         .filter(outlet ->
-                                calculateDistanceInKilometers(
-                                        lat,
-                                        lon,
-                                        outlet.latitude(),
-                                        outlet.longitude()
-                                ) <= 5.0
+                                        GeoUtil.calculateDistance(outlet.getLatitude(),outlet.getLongitude(),lat,lon)
+                                <= Constants.MAXIMUM_DELIVERABLE_DISTANCE
                         )
                         .toList();
     }
 
     @Override
-    public List<FoodR> getMenuByOutlet(Integer outletId) {
-        return foodRepository.findMenuByOutletId(outletId);
+    public List<Food> getMenuByOutlet(Integer outletId) {
+        return foodRepository.findByOutletId(outletId);
     }
 
-    private static double calculateDistanceInKilometers(
-            double lat1,
-            double lon1,
-            double lat2,
-            double lon2) {
-
-        final double EARTH_RADIUS = 6371.0;
-
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-
-        lat1 = Math.toRadians(lat1);
-        lat2 = Math.toRadians(lat2);
-
-        double a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                        + Math.cos(lat1)
-                        * Math.cos(lat2)
-                        * Math.sin(dLon / 2)
-                        * Math.sin(dLon / 2);
-
-        double c =
-                2 * Math.atan2(
-                        Math.sqrt(a),
-                        Math.sqrt(1 - a)
-                );
-
-        return EARTH_RADIUS * c;
-    }
-    @Override
-    public boolean isDeliverable(Double lat, Double lon, Integer outletId){
-        Location location = outletRepository.findLocationByIdAndStatus(outletId);
-        return calculateDistanceInKilometers(lat,lon,location.latitude(),location.longitude()) <= 5.0;
-    }
 }

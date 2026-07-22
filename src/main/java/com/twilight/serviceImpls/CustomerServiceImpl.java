@@ -1,53 +1,39 @@
 package com.twilight.serviceImpls;
 
-import com.twilight.exceptions.NotFoundException;
-import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.Customer;
-import com.twilight.objects.Location;
-import com.twilight.repositories.CustomerAddressRepository;
-import com.twilight.repositories.CustomerRepository;
+import com.twilight.objects.User;
+import com.twilight.repositories.UserRepository;
 import com.twilight.services.CustomerService;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.twilight.types.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
+
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
-    @Autowired
-    CustomerRepository customerRepository;
-    @Autowired
-    CustomerAddressRepository customerAddressRepository;
 
-
+    final UserRepository userRepository;
 
     @Override
-    public Customer load(String mobNo) throws UnAuthorizedException {
-        return customerRepository.findById(mobNo).orElseThrow(()->new NotFoundException("User trying to load without registration","Not registered"));
-    }
-
-    @Override
-    public void create(String mobNo, String name) throws UnAuthorizedException{
-        customerRepository.findById(mobNo)
-                .ifPresent(customer ->{
-                        throw new UnAuthorizedException("User trying to register again","User exists");
-                    }
-                );
+    public User create(String mobNo, String name) {
+        User user = userRepository.findById(mobNo)
+                .orElse(
+                        User
+                                .builder()
+                                .mobNo(mobNo)
+                                .blocked(false)
+                                .build());
+        user.getRoles().add(Role.customer);
         Customer customer = new Customer();
         customer.setName(name);
         customer.setMobNo(mobNo);
-        customerRepository.save(customer);
+        customer.setUser(user);
+        user.setCustomer(customer);
+        userRepository.save(user);
+
+        return null;
     }
-
-    @Override
-    public void addAddressAsType(@NonNull Customer customer, @NotNull Location address) {
-        address.setCustomer(customer);
-        customerAddressRepository.save(address);
-    }
-
-
 }

@@ -5,7 +5,9 @@ spring:
   application:
     name: Twilight
 
-
+  cache:
+    redis:
+      time-to-live: 600000
   #Servlet Configuration ----------------------------------------#
   servlet:
     multipart:

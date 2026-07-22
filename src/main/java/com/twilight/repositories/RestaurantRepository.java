@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<@NonNull Restaurant,@NonNull Integer> {
-   Optional<Restaurant> findByMerchantMobNo(@MobileNumber String mobNo);
+   Optional<Restaurant> findByMerchantMobNo(@MobileNumber String merchantMobNo);
 }

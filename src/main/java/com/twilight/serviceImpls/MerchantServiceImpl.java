@@ -1,157 +1,108 @@
 package com.twilight.serviceImpls;
 
+import com.twilight.types.InvitationStatus;
+import com.twilight.types.Role;
+import com.twilight.utils.Constants;
 import com.twilight.utils.annotations.MobileNumber;
-import com.twilight.dataTransferObjects.MenuUpdateR;
 import com.twilight.dataTransferObjects.OutletDetailed;
 import com.twilight.dataTransferObjects.Location;
-import com.twilight.exceptions.BadRequestException;
 import com.twilight.exceptions.NotFoundException;
-import com.twilight.exceptions.SomethingWentWrongException;
-import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.*;
 import com.twilight.repositories.*;
-import com.twilight.services.DispatchService;
 import com.twilight.services.MerchantService;
-import com.twilight.types.InvitationStatus;
-import com.twilight.types.OutletStatus;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
-
+@RequiredArgsConstructor
 public class MerchantServiceImpl implements MerchantService {
-    @Autowired
-    RestaurantRepository restaurantRepository;
 
-    @Autowired
-    MerchantRepository merchantRepository;
+    final RestaurantRepository restaurantRepository;
 
-    @Autowired
-    OutletInvitationRepository invitationRepository;
+    final MerchantRepository merchantRepository;
 
-    @Autowired
-    OutletRepository outletRepository;
+    final OutletInvitationRepository invitationRepository;
 
-    @Autowired
-    ProductRepository productRepository;
+    final OutletRepository outletRepository;
 
-    @Autowired
-    DispatchService dispatchService;
+    final ProductRepository productRepository;
+
+    final KafkaTemplate<String,Object> kafka;
+
+    final UserRepository userRepository;
 
 
 
     @Override
-    public void createMerchant(Merchant merchant, Restaurant restaurant) {
-        merchant.setRestaurant(restaurant);
+    public void create(Merchant merchant, Restaurant restaurant) {
+
+        User user = userRepository.findById(merchant.getMobNo())
+                .orElse(
+                        User
+                                .builder()
+                                .mobNo(
+                                        merchant.getMobNo()
+                                ).
+                                blocked(false)
+                                .build());
+        user.getRoles().add(Role.merchant);
+        user.setMerchant(merchant);
+        merchant.setUser(user);
         restaurant.setMerchant(merchant);
-        merchantRepository.save(merchant);
+        merchant.setRestaurant(restaurant);
+        userRepository.save(user);
     }
-    @Override
-    public void getMerchant(String mobNo) {
-        merchantRepository.findById(mobNo).orElseThrow(
-                ()-> new NotFoundException(
-                        "Merchant not found"
-                        ,"Could not find you linked account"));
-    }
+
 
     @Override
     public void createOutlet(String mobNo, Location location) {
-        Restaurant restaurant = findRestaurantByMobNo(mobNo);
+        Merchant merchant = merchantRepository
+                .findById(mobNo)
+                .orElseThrow(NotFoundException::new);
         Outlet outlet = new Outlet();
-        outlet.setLatitude(location.latitude());
-        outlet.setLongitude(location.longitude());
-        outlet.setOutletStatus(OutletStatus.closed);
-        outlet.setMerchantMobNo(mobNo);
-        outlet.setRestaurant(restaurant);
+        outlet.setMerchant(merchant);
+        outlet.setRestaurant(merchant.getRestaurant());
 
-        outletRepository.save(outlet);
     }
 
     @Override
-    public OutletInvitation invite(String inviterMobNo, String inviteeMobNo, Integer outletId) {
-        Outlet outlet = outletRepository.findById(outletId)
-                            .orElseThrow(
-                                    ()-> new NotFoundException(
-                                            "User trying to send invitation for outlet that does not exist",
-                                            "Outlet does not exist"
-                                    ));
-        if(!outlet.getMerchantMobNo().equals(inviterMobNo))
-            throw new UnAuthorizedException(
-                    "User is trying to send invitation of outlet that is not his",
-                    "Outlet does not belong to your restaurant"
-            );
-        OutletInvitation invitation = new OutletInvitation();
-        invitation.setInviterMobileNo(inviterMobNo);
-        invitation.setInviteeMobileNo(inviteeMobNo);
-        invitation.setStatus(InvitationStatus.pending);
-        invitation.setOutletId(outletId);
-        return invitationRepository.save(invitation);
-    }
-
-    @Override
-    public OutletInvitation inviteSomeoneElse(String merchantMobNo, String inviteeMobNo, Integer outletId) throws BadRequestException {
-        OutletInvitation invitation = invitationRepository.findByOutletId(outletId)
-                .orElseThrow(
-                    ()-> new BadRequestException(
-                            "User is trying to find a invitation",
-                            "Invitation does not exist"));
-        if(!invitation.getInviterMobileNo().equals(merchantMobNo)){
-            throw new UnAuthorizedException("User is trying unauthorized access","Unauthorized");
+    public OutletInvitation invite(String mobNo,Integer outletId, String inviteeMobNo) {
+        Outlet outlet = outletRepository.findByIdAndMerchantMobNo(outletId, mobNo).orElseThrow(NotFoundException::new);
+        OutletInvitation oldInvitation = outlet.getOutletInvitation();
+        if(oldInvitation != null){
+            oldInvitation.setStatus(InvitationStatus.pending);
+            oldInvitation.setInviteeMobNo(inviteeMobNo);
+            outletRepository.save(outlet);
+            return oldInvitation;
         }
-
-        invitation.setInviteeMobileNo(inviteeMobNo);
+        OutletInvitation invitation = OutletInvitation.builder()
+                .outlet(outlet)
+                .inviteeMobNo(inviteeMobNo)
+                .merchant(outlet.getMerchant())
+                .build();
         return invitationRepository.save(invitation);
     }
+
     @Override
     public List<OutletDetailed> viewAllOutlets(@MobileNumber String merchantMobNo){
         return outletRepository.findAllByMerchantMobNo(merchantMobNo);
-    };
+    }
 
     @Override
     public List<OutletInvitation> viewAllInvitation(@MobileNumber String merchantMobNo){
-        return invitationRepository.findAllByInviterMobileNo(merchantMobNo);
-    };
-
-    @Override
-    public Restaurant findRestaurantByMobNo(String mobNo) throws NotFoundException {
-        return restaurantRepository
-                .findByMerchantMobNo(mobNo)
-                .orElseThrow(
-                        ()->new NotFoundException(
-                                "User is trying to find restaurant",
-                                "Not restaurant linked to your mobile number"
-                        )
-                );
+        return invitationRepository.findAllByMerchantMobNo(merchantMobNo);
     }
 
-    @Override
-    public void addAllToMenu(String mobNo, List<Product> products) throws NotFoundException {
-        Restaurant restaurant = findRestaurantByMobNo(mobNo);
-        restaurant.setMenuAdded(true);
-        products.forEach(product -> {
-            product.setRestaurant(restaurant);
-        });
-        restaurant.setProducts(products);
-        restaurantRepository.save(restaurant);
-    }
-    @Override
-    public void addToMenu(String mobNo, Product product) throws NotFoundException , SomethingWentWrongException {
-        Restaurant restaurant = findRestaurantByMobNo(mobNo);
-        product.setRestaurant(restaurant);
-        product = productRepository.save(product);
-        MenuUpdateR request = new MenuUpdateR(product.getId(),restaurant.getId());
-        dispatchService.dispatch("update-menu",request);
-    }
 
     @Override
-    public void checkForMenuAdded(String mobNo) throws UnAuthorizedException {
-        Restaurant restaurant = findRestaurantByMobNo(mobNo);
-        if(restaurant.isMenuAdded())
-            throw new UnAuthorizedException("User is trying to add menu multiple times","Menu can only be added once");
+    public void updateMenu(String mobNo, List<Product> products) throws NotFoundException {
+        Restaurant restaurant = restaurantRepository.findByMerchantMobNo(mobNo).orElseThrow(NotFoundException::new);
+        products.forEach(product -> product.setRestaurant(restaurant));
+        products = productRepository.saveAll(products);
+        products.forEach(product -> kafka.send(Constants.UPDATE_MENU_TOPIC, product.getId()));
     }
 
 

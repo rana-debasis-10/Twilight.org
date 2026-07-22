@@ -1,98 +1,97 @@
 package com.twilight.serviceImpls;
 
-import com.twilight.dataTransferObjects.FoodR;
 import com.twilight.dataTransferObjects.OutletR;
+import com.twilight.dataTransferObjects.WebSocketMessage;
 import com.twilight.exceptions.BadRequestException;
+import com.twilight.exceptions.FailedToNotifyException;
 import com.twilight.exceptions.NotFoundException;
-import com.twilight.exceptions.UnAuthorizedException;
-import com.twilight.objects.Food;
-import com.twilight.objects.Manager;
-import com.twilight.objects.Outlet;
-import com.twilight.objects.OutletInvitation;
-import com.twilight.repositories.FoodRepository;
-import com.twilight.repositories.ManagerRepository;
-import com.twilight.repositories.OutletInvitationRepository;
-import com.twilight.repositories.OutletRepository;
+import com.twilight.managers.WebsocketSessionManager;
+import com.twilight.objects.*;
+import com.twilight.repositories.*;
 import com.twilight.services.ManagerService;
 import com.twilight.types.InvitationStatus;
+import com.twilight.types.OrderStatus;
 import com.twilight.types.OutletStatus;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.twilight.types.Role;
+import com.twilight.utils.Constants;
+import com.twilight.utils.annotations.MobileNumber;
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 
 public class ManagerServiceImpl implements ManagerService {
-    @Autowired
-    OutletInvitationRepository outletInvitationRepository;
-    @Autowired
-    OutletRepository outletRepository;
-    @Autowired
-    FoodRepository foodRepository;
-    @Autowired
-    ManagerRepository managerRepository;
+
+    final OutletInvitationRepository invitationRepository;
+
+    final ManagerRepository managerRepository;
+
+    final OutletRepository outletRepository;
+
+    final FoodRepository foodRepository;
+
+    final UserRepository userRepository;
+
+    final OrderRepository orderRepository;
+
+    final KafkaTemplate<String, String> kafka;
+
+    final WebsocketSessionManager websocketSessionManager;
 
 
     @Override
-    public Integer findLinkedOutlet(String mobNo) throws NotFoundException {
-        Manager manager = managerRepository
-                .findById(mobNo).
-                orElseThrow(()-> new NotFoundException(
-                        "User is unable to find the outlet with Mobile Number :"
-                                + mobNo
-                        ,"No linked outlet"));
-        return manager.getOutletId();
-    }
+    public List<OutletInvitation> viewAllInvitation(@MobileNumber String mobNo){
+        return invitationRepository.findAllByInviteeMobNo(mobNo);
+    };
 
     @Override
-    public Integer acceptInvitation(String mobNo, Integer invitationId) throws NotFoundException{
-        OutletInvitation invitation = outletInvitationRepository
-                .findById(invitationId)
-                .orElseThrow(()-> new NotFoundException(
-                        "User is unable to find invitation with invitation id : "
-                                + invitationId + "and Mobile Number : "
-                                + mobNo
-                        ,"Invitation does not exist "));
-        if(!invitation.getInviteeMobileNo().equals(mobNo))
-            throw new UnAuthorizedException("User trying to get invitation access",
-                    "Invitation does not belong to you");
-        List<OutletInvitation> invitations = outletInvitationRepository.findByInviteeMobileNo(mobNo);
-        for(OutletInvitation invitation1 :invitations){
-            invitation1.setStatus(InvitationStatus.rejected);
+    public void acceptInvitation(String inviteeMobNo, Integer invitationId) throws NotFoundException{;
+        OutletInvitation invitation = invitationRepository.findByIdAndInviteeMobNo(invitationId,inviteeMobNo).orElseThrow(NotFoundException::new);
+        if(invitation.getStatus().equals(InvitationStatus.expired))
+            throw new NotFoundException();
+        User user = userRepository.findById(inviteeMobNo)
+                .orElse(
+                        User
+                                .builder()
+                                .mobNo(inviteeMobNo)
+                                .blocked(false)
+                                .build());
+        Manager manager = new Manager();
+        user.getRoles().add(Role.manager);
+        manager.setUser(user);
+        Outlet outlet = invitation.getOutlet();
+        Manager oldManager = outlet.getManager();
+        outlet.setManager(manager);
+        if(oldManager != null){
+            oldManager.setOutlet(null);
+            User oldUser =userRepository.findById(oldManager.getMobNo()).orElseThrow(NotFoundException::new);
+            oldUser.setManager(null);
+            oldUser.getRoles().remove(Role.manager);
+            userRepository.save(oldUser);
+            oldManager.setUser(null);
+            managerRepository.delete(oldManager);
         }
-        Integer outletId = invitation.getOutletId();
-        Outlet outlet = outletRepository.
-                findById(outletId).
-                orElseThrow(
-                        ()-> new UnAuthorizedException(
-                                "Outlet does not exist",
-                                "Outlet does not exist"));
-        outlet.setManagerMobNo(mobNo);
-        outletRepository.save(outlet);
-        Manager manager = new Manager(mobNo,outletId);
-        managerRepository.save(manager);
-
-        return outletId;
-    }
-
-    @Override
-    public List<OutletInvitation> getInvitation(String mobNo) throws NotFoundException {
-        return outletInvitationRepository.findByInviteeMobileNo(mobNo);
+        manager.setOutlet(outlet);
+        user.setManager(manager);
+        userRepository.save(user);
+        invitation.setStatus(InvitationStatus.accepted);
+        invitationRepository.save(invitation);
+        kafka.send(Constants.INVITATION_EXPIRATION_TOPIC,inviteeMobNo);
     }
 
     @Override
     public void updateFoodPrice(Integer outletId, Integer foodId, Double price) throws NotFoundException {
         Food food = foodRepository.
-                    findFoodByIdAndOutletId(foodId,outletId).
+                findByIdAndOutletId(foodId,outletId).
                     orElseThrow(
-                            ()-> new NotFoundException(
-                                    "Merchant is not found"
-                                    ,"No Linked Try creating one"));
+                            NotFoundException::new);
 
-        food.setPriceOverride(price);
+        food.setPrice(price);
         foodRepository.save(food);
     }
 
@@ -103,9 +102,8 @@ public class ManagerServiceImpl implements ManagerService {
 
     private void updateFoodAvailability(Integer outletId, Integer foodId, boolean available) throws NotFoundException {
         Food food = foodRepository.
-                findFoodByIdAndOutletId(foodId,outletId).
-                orElseThrow(()->
-                        new NotFoundException("Expected food not found","Food does not exist or does not belong your outlet"));
+                findByIdAndOutletId(foodId,outletId).
+                orElseThrow(NotFoundException::new);
         food.setAvailable(available);
     }
 
@@ -126,23 +124,43 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public OutletR viewOutlet(Integer outletId) throws BadRequestException {
-        return outletRepository.findByOutletId(outletId).orElseThrow(()-> new NotFoundException("Expected outlet not found","Could not find your outlet"));
+        return outletRepository.findByOutletId(outletId).orElseThrow(NotFoundException::new);
 
     }
 
     @Override
-    public List<FoodR> getAllFoods(Integer outletId) throws NotFoundException {
-        return foodRepository.findMenuByOutletId(outletId);
+    public List<Food> getAllFoods(Integer outletId) throws NotFoundException {
+        return foodRepository.findByOutletId(outletId);
     }
-
-
-
     private void operateOutlet(Integer outletId,OutletStatus status)throws NotFoundException {
         Outlet outlet = outletRepository
                 .findById(outletId)
-                .orElseThrow(()-> new NotFoundException("Expected outlet not found","Could not find your outlet"));
-        outlet.setOutletStatus(status);
+                .orElseThrow(NotFoundException::new);
+        outlet.setStatus(status);
         outletRepository.save(outlet);
+    }
+
+    @Override
+    public void acceptOrder(String mobNo, Integer orderId, boolean accept) throws IOException {
+        Order order = orderRepository.findById(orderId).orElseThrow(NotFoundException::new);
+        if(order.getOutlet().getManager().getMobNo().equals(mobNo)){
+            if(accept){
+                order.setStatus(OrderStatus.preparing);
+                orderRepository.save(order);
+
+
+            }
+            else{
+                order.setStatus(OrderStatus.outlet_rejected);
+            }
+            try {
+                WebSocketMessage message = new WebSocketMessage(accept?Constants.ORDER_STARTED_PREPARING:Constants.ORDER_REJECTED,null);
+                websocketSessionManager.send(order.getCustomer().getMobNo(),message );
+            } catch (IOException e) {
+                throw new FailedToNotifyException();
+            }
+            kafka.send(Constants.ASSIGN_DELIVERY_PARTNER_TOPIC,order.getId().toString());
+        }
     }
 }
 

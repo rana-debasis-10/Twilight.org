@@ -8,13 +8,12 @@ import com.twilight.dataTransferObjects.Payment;
 import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.services.PaymentService;
-import lombok.AllArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import com.twilight.services.DispatchService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +26,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Value("${razorpay.key.id}")
     private String keyId;
 
+
     @Autowired
-    DispatchService dispatchService;
+    KafkaTemplate<String,String> kafka;
 
     @Override
     public void verifyPayment(Payment payment) {
@@ -45,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         try{
             if(Utils.verifyPaymentSignature(options, keySecret)){
-                dispatchService.dispatch(
+                kafka.send(
                         "Notify-Outlet",
                         payment.razorpayOrderId()
                 );

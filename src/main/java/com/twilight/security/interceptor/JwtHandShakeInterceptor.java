@@ -35,7 +35,7 @@ public class JwtHandShakeInterceptor implements HandshakeInterceptor {
 
         String token = authHeader.substring(7);
 
-        if (jwtService.isTokenValid(token))
+        if (jwtService.isValid(token))
             return false;
 
         Claims claims = jwtService.extractClaims(token);

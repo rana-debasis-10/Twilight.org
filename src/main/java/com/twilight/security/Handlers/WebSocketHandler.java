@@ -1,7 +1,7 @@
 package com.twilight.security.Handlers;
-import com.twilight.dataTransferObjects.Location;
+import com.twilight.objects.Location;
 import com.twilight.dataTransferObjects.WebSocketMessage;
-import com.twilight.managers.SessionManager;
+import com.twilight.managers.WebsocketSessionManager;
 import com.twilight.services.LocationService;
 import com.twilight.types.Role;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 @Component
 @RequiredArgsConstructor
 public class WebSocketHandler extends TextWebSocketHandler {
-    private final SessionManager sessionManager;
+    private final WebsocketSessionManager websocketSessionManager;
     private final LocationService locationService;
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -26,10 +26,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String mobileNumber = (String)session.getAttributes().get("Mobile Number");
         Role role = Role.valueOf((String)session.getAttributes().get("Role"));
         if( role == Role.manager && session.getAttributes().containsKey("Credential") ){
-            sessionManager.add((String)session.getAttributes().get("Credential"), session);
+            websocketSessionManager.add((String)session.getAttributes().get("Credential"), session);
             return;
         }
-        sessionManager.add(mobileNumber,session);
+        websocketSessionManager.add(mobileNumber,session);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String driverMobNo =
                 (String) session.getAttributes().get("driverMobNo");
 
-        sessionManager.remove(driverMobNo);
+        websocketSessionManager.remove(driverMobNo);
 
     }
 

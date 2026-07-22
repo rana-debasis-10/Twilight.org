@@ -1,48 +1,35 @@
 package com.twilight.serviceImpls;
 
 import com.twilight.exceptions.NotFoundException;
-import com.twilight.exceptions.UnAuthorizedException;
 import com.twilight.objects.Driver;
+
 import com.twilight.repositories.DriverRepository;
+import com.twilight.repositories.OrderRepository;
 import com.twilight.services.DriverService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.twilight.types.OrderStatus;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
-
+@RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
 
+    final DriverRepository driverRepository;
 
-    @Autowired
-    DriverRepository driverRepository;
+    final OrderRepository orderRepository;
 
-    /**
-     * Drivers mobile number is needed
-     **/
     @Override
-    public void findDriver(String mobNo) {
-        driverRepository.findById(mobNo).orElseThrow(()->new NotFoundException("Driver already Exists","Driver does not exist"));
-    }
-
-
-    /**
-     * //@param Driver Object is needed
-     **/
-    @Override
-    public void createDriver(Driver driver) {
-        driverRepository.findById(driver.getMobNo()).ifPresent((driverDb)->{throw new UnAuthorizedException("Driver Exists"," Driver Exists");});
+    public void create(Driver driver) {
         driverRepository.save(driver);
     }
 
-    /**
-     *  Delivery partner mobile number
-     * Order ID of the order that is to be accepted
-     *
-     */
     @Override
     public void acceptOrder(String mobNo, Integer orderId) {
-
+        Driver driver = driverRepository.findById(mobNo).orElseThrow(NotFoundException::new);
+        int success = orderRepository.acceptOrder(orderId,driver, OrderStatus.driver_assigned,OrderStatus.driver_pending);
+        if(success==0){
+            throw new NotFoundException();
+        }
     }
 }

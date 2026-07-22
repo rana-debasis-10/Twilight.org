@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @MapsId
     @JoinColumn(name = "mob_no")
     private User user;
@@ -34,7 +34,7 @@ public class Customer {
     private List<Order> orders;
 
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
-    private List<Location> addresses ;
+    private List<CustomerLocation> addresses;
 
 
 }

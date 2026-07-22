@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String token = authHeader.substring(7);
-            if (!jwtService.isTokenValid(token)) {
+            if (!jwtService.isValid(token)) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             );
 
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(mobNo , credential , authorities);
+                    new UsernamePasswordAuthenticationToken(mobNo ,credential, authorities);
 
             authentication.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request)

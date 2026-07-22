@@ -9,7 +9,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class Item {
 
     @Id
@@ -26,7 +26,7 @@ public class Item {
     @DecimalMin(value = "0.0")
     private Double subtotal;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "food_id")
     Food food;
 

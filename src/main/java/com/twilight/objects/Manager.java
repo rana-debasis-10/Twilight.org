@@ -25,7 +25,7 @@ public class Manager {
    private String mobNo;
 
    @NotNull
-   @OneToOne
+   @OneToOne(cascade = CascadeType.ALL)
    @JoinColumn(name ="outlet_id")
    private Outlet outlet;
 }

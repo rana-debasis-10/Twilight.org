@@ -4,13 +4,13 @@ import com.twilight.dataTransferObjects.DriverR;
 import com.twilight.dataTransferObjects.Jwt;
 import com.twilight.dataTransferObjects.MerchantR;
 import com.twilight.dataTransferObjects.RestaurantR;
+import com.twilight.utils.annotations.Image;
 import com.twilight.utils.mappers.MerchantMapper;
 import com.twilight.utils.mappers.RestaurantMapper;
 import com.twilight.objects.*;
 import com.twilight.services.*;
 import com.twilight.types.Role;
 import com.twilight.security.UserContext;
-import com.twilight.validators.ImageValidator;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -42,8 +42,6 @@ public class AccountEndpoint {
 
     private  MerchantMapper merchantMapper;
 
-    private  ImageValidator imageValidator;
-
     private  StorageService storageService;
 
     private  MerchantService merchantService;
@@ -74,14 +72,11 @@ public class AccountEndpoint {
     public Jwt createMerchantAndRestaurant(
             @RequestPart("merchant")@Valid MerchantR merchantR,
             @RequestPart("restaurant")@Valid RestaurantR restaurantR,
-            @RequestPart("image")MultipartFile image
+            @RequestPart("image")@Valid @Image MultipartFile image
     ) throws IOException {
-
-        imageValidator.validateImage(image);
 
         Restaurant restaurant = restaurantMapper.toRestaurant(restaurantR);
         Merchant merchant = merchantMapper.toMerchant(merchantR);
-
         String mobNo = user.getMobNo();
 
         merchant.setMobNo(mobNo);
@@ -90,7 +85,7 @@ public class AccountEndpoint {
 
         restaurant.setImage(key);
 
-        merchantService.createMerchant(merchant, restaurant);
+        merchantService.create(merchant, restaurant);
 
         storageService.upload(image,key);
 
@@ -149,7 +144,7 @@ public class AccountEndpoint {
     public Jwt registerDriver(@RequestBody @Valid DriverR driverR){
         String mobNo = user.getMobNo();
         Driver driver = new Driver(mobNo,driverR.name(),driverR.drivingLicense(), driverR.pan(),driverR.aadhaar(),driverR.bankAccount(),driverR.ifsc());
-        driverService.createDriver(driver);
+        driverService.create(driver);
         return new Jwt(jwtService.generateToken(mobNo,Role.driver));
 
     }

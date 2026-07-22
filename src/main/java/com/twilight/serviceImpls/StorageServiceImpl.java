@@ -3,7 +3,6 @@ package com.twilight.serviceImpls;
 import com.twilight.exceptions.NotFoundException;
 import com.twilight.exceptions.SomethingWentWrongException;
 import com.twilight.services.StorageService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,19 +19,16 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Slf4j
 @Service
-
 public class StorageServiceImpl implements StorageService {
 
     @Autowired
     private S3Client s3Client;
+
     @Value("${storage.client.bucket}")
     private String bucket;
-    @Value("${storage.client.endpoint}")
-    private String endpoint;
 
     public void upload(MultipartFile file,String key) throws IOException {
 
@@ -63,9 +59,7 @@ public class StorageServiceImpl implements StorageService {
                             .build()
             ).asByteArray();
         } catch (AwsServiceException |SdkClientException e) {
-            throw new NotFoundException(
-                    e.getMessage()
-                    ,"Image not found");
+            throw new NotFoundException();
         } catch (Exception e) {
             throw new SomethingWentWrongException(
                     e.getMessage()
@@ -84,9 +78,7 @@ public class StorageServiceImpl implements StorageService {
                             .build()
             );
         } catch (AwsServiceException |SdkClientException e) {
-            throw new NotFoundException(
-                    e.getMessage()
-                    ,"Image not found");
+            throw new NotFoundException();
         } catch (Exception e) {
             throw new SomethingWentWrongException(
                     e.getMessage()

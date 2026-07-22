@@ -12,7 +12,7 @@ public record OrderR(
         @NotNull
         List<ItemR>foods,
         @NotNull
-        Address address,
+        Location address,
         @NotBlank
         @MobileNumber String deliveryMobNo,
         @NotNull PaymentMethod paymentMethod
